@@ -374,25 +374,6 @@ export default function HomePage() {
                   </h2>
                 </div>
 
-                <a
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hidden items-center gap-2 rounded-2xl border bg-accent px-4 py-3 sm:flex"
-                  data-testid="card-pickup"
-                >
-                  <MapPin
-                    className="size-4 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground">Pick-up</p>
-                    <p className="text-sm font-semibold" data-testid="text-quick-address">
-                      {RESTAURANT.addressLine1}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Tap for directions</p>
-                  </div>
-                </a>
               </div>
 
               <QuickInfoPills />
