@@ -25,7 +25,7 @@ const RESTAURANT = {
 
 function NavHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header className="page-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="container-page flex h-14 items-center justify-between">
         <Link href="/">
           <button
@@ -120,7 +120,7 @@ function MapEmbed() {
 
 function BottomCallBar() {
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:hidden">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:hidden fixed-bottom-safe">
       <div className="container-page pb-3">
         <div className="pointer-events-auto rounded-2xl border bg-card/95 shadow-md backdrop-blur supports-[backdrop-filter]:bg-card/80">
           <div className="flex items-center gap-3 p-3">
@@ -154,7 +154,7 @@ export default function ContactPage() {
     <div className="min-h-dvh bg-background">
       <NavHeader />
 
-      <main className="container-page pb-24 pt-6">
+      <main className="container-page main-bottom-safe pt-6">
         <section
           className="grain overflow-hidden rounded-3xl border bg-card shadow-sm"
           data-testid="card-contact-hero"

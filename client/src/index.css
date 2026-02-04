@@ -51,6 +51,12 @@
   --button-outline: rgba(0, 0, 0, 0.10);
   --badge-outline: rgba(0, 0, 0, 0.05);
 
+  /* Safe area insets for notch / home indicator (fallback 0 for older browsers) */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+
   --opaque-button-border-intensity: -8;
 
   --elevate-1: rgba(0, 0, 0, 0.03);
@@ -188,6 +194,28 @@
   }
 
   .container-page {
-    @apply mx-auto w-full max-w-[980px] px-4;
+    @apply mx-auto w-full max-w-[980px];
+    padding-left: max(1rem, var(--safe-area-left));
+    padding-right: max(1rem, var(--safe-area-right));
+  }
+
+  /* Sticky header: keep content below notch / status bar */
+  .page-header {
+    padding-top: var(--safe-area-top);
+  }
+
+  /* Fixed bottom bars: keep above home indicator and clear of side notches */
+  .fixed-bottom-safe {
+    padding-bottom: max(1rem, var(--safe-area-bottom));
+    padding-left: max(1rem, var(--safe-area-left));
+    padding-right: max(1rem, var(--safe-area-right));
+  }
+
+  /* Main content when there's a fixed bottom bar: extra bottom space on notch devices */
+  .main-bottom-safe {
+    padding-bottom: max(6rem, calc(6rem + var(--safe-area-bottom)));
+  }
+  .main-bottom-safe-lg {
+    padding-bottom: max(8rem, calc(8rem + var(--safe-area-bottom)));
   }
 }

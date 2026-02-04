@@ -202,7 +202,7 @@ function CategorySection({ cat }: { cat: MenuCategory }) {
 
 function NavHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+    <header className="page-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="container-page flex h-14 items-center justify-between">
         <Link href="/">
           <button
