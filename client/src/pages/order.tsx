@@ -414,6 +414,15 @@ export default function OrderPage() {
   };
 
   const handleCheckout = () => {
+    if (totalCount === 0) {
+      toast({
+        title: "Your cart is empty",
+        description: "Add a pizza or a side to place a pick-up order.",
+      });
+      return;
+    }
+
+    setIsCheckoutOpen(false);
     setOrderStatus("processing");
     setTimeout(() => {
       setOrderStatus("success");
@@ -446,29 +455,57 @@ export default function OrderPage() {
   }, [lineItems]);
 
   if (orderStatus === "success") {
+    const orderNumber = Math.floor(1000 + Math.random() * 9000);
+
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center p-6 text-center">
         <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
           <Check className="size-10" aria-hidden="true" />
         </div>
-        <h1 className="text-3xl font-bold">Order received!</h1>
-        <p className="mt-2 text-muted-foreground">
-          You’re all set. This is a demo checkout—no payment processed. We’ll have it ready for
-          pick-up in about 20 minutes.
+        <h1 className="text-3xl font-bold" data-testid="text-success-title">Pick-up order placed!</h1>
+        <p className="mt-2 text-muted-foreground" data-testid="text-success-subtitle">
+          Demo checkout only — no payment processed. We’ll have it ready in about 20 minutes.
         </p>
+
+        <div className="mt-5 w-full max-w-sm rounded-3xl border bg-card p-4 text-left shadow-sm" data-testid="card-success-details">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-muted-foreground">Order #</p>
+            <p className="text-sm font-bold tabular-nums" data-testid="text-success-order-number">{orderNumber}</p>
+          </div>
+          <div className="mt-3 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground">Pick-up</p>
+              <p className="mt-1 text-sm font-semibold" data-testid="text-success-pickup-eta">{RESTAURANT.pickupEta}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-semibold text-muted-foreground">Name</p>
+              <p className="mt-1 text-sm font-semibold" data-testid="text-success-name">Guest</p>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-6 grid w-full max-w-sm gap-2">
           <Link href="/">
-            <Button className="h-12 w-full rounded-xl" data-testid="button-success-home">
+            <Button className="h-12 w-full rounded-2xl" data-testid="button-success-home">
               Back to home
             </Button>
           </Link>
           <Link href="/menu">
             <Button
               variant="outline"
-              className="h-12 w-full rounded-xl"
+              className="h-12 w-full rounded-2xl"
               data-testid="button-success-menu"
             >
-              Keep browsing menu
+              View menu
+            </Button>
+          </Link>
+          <Link href="/order">
+            <Button
+              variant="ghost"
+              className="h-12 w-full rounded-2xl"
+              data-testid="button-success-new-order"
+            >
+              Start a new order
             </Button>
           </Link>
         </div>
