@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link, useLocation } from "wouter";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "wouter";
 import {
   ChevronLeft,
   ShoppingCart,
@@ -25,6 +25,11 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import heroPizza from "@/assets/pizza-oven.png";
+import {
+  clearOrderSession,
+  loadOrderSession,
+  saveOrderSession,
+} from "@/lib/orderSession";
 
 const RESTAURANT = {
   name: "Tony's Pizza Shack",
@@ -107,8 +112,6 @@ const MENU: MenuCategory[] = [
   },
 ];
 
-type CartItem = MenuItem & { quantity: number };
-
 type OrderMode = "pickup" | "delivery";
 
 type Topping = {
@@ -146,9 +149,9 @@ type LineItem =
   | { kind: "other"; data: OtherLineItem };
 
 const SIZES: Size[] = [
-  { id: "sm", name: "Small (12\")", priceDelta: -2 },
-  { id: "md", name: "Medium (14\")", priceDelta: 0 },
-  { id: "lg", name: "Large (16\")", priceDelta: 4 },
+  { id: "sm", name: 'Small (12")', priceDelta: -2 },
+  { id: "md", name: 'Medium (14")', priceDelta: 0 },
+  { id: "lg", name: 'Large (16")', priceDelta: 4 },
 ];
 
 const TOPPINGS: Topping[] = [
@@ -169,11 +172,13 @@ function makePizzaKey(baseId: string, c: PizzaCustomization) {
   return `${baseId}|${c.sizeId}|${toppings}`;
 }
 
-function defaultCustomization(): PizzaCustomization {
-  return { sizeId: "md", toppingIds: [] };
-}
-
-function ItemBadge({ icon: Icon, text }: { icon: React.ComponentType<{ className?: string }>; text: string }) {
+function ItemBadge({
+  icon: Icon,
+  text,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  text: string;
+}) {
   return (
     <div className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/30 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
       <Icon className="size-3.5" />
@@ -208,7 +213,10 @@ function QuantityPill({
       >
         <Minus className="size-4" aria-hidden="true" />
       </button>
-      <span className="min-w-6 text-center text-sm font-bold tabular-nums" data-testid={qtyTestId}>
+      <span
+        className="min-w-6 text-center text-sm font-bold tabular-nums"
+        data-testid={qtyTestId}
+      >
         {quantity}
       </span>
       <button
@@ -225,22 +233,48 @@ function QuantityPill({
 }
 
 export default function OrderPage() {
-  const [, setLocation] = useLocation();
-
   const [mode, setMode] = useState<OrderMode>("pickup");
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [orderStatus, setOrderStatus] = useState<"idle" | "processing" | "success">("idle");
+  const [orderStatus, setOrderStatus] = useState<"idle" | "processing" | "success">(
+    "idle",
+  );
   const [notes, setNotes] = useState("");
+  const [restored, setRestored] = useState(false);
 
   const pizzas = useMemo(() => MENU.find((c) => c.id === "pizzas")?.items ?? [], []);
+
+  useEffect(() => {
+    const session = loadOrderSession();
+    if (!session) {
+      setRestored(true);
+      return;
+    }
+
+    setMode(session.mode);
+    setLineItems(session.lineItems as LineItem[]);
+    setNotes(session.notes);
+    setRestored(true);
+  }, []);
+
+  useEffect(() => {
+    if (!restored) return;
+
+    if (lineItems.length === 0 && notes.trim().length === 0) {
+      saveOrderSession({ mode, lineItems, notes: "" });
+      return;
+    }
+
+    saveOrderSession({ mode, lineItems, notes });
+  }, [mode, lineItems, notes, restored]);
 
   const subtotal = useMemo(() => {
     return lineItems.reduce((acc, li) => {
       if (li.kind === "other") {
         return acc + li.data.item.price * li.data.quantity;
       }
-      const sizeDelta = SIZES.find((s) => s.id === li.data.customization.sizeId)?.priceDelta ?? 0;
+      const sizeDelta = SIZES.find((s) => s.id === li.data.customization.sizeId)
+        ?.priceDelta ?? 0;
       const toppingsTotal = li.data.customization.toppingIds.reduce((tAcc, tId) => {
         const t = TOPPINGS.find((x) => x.id === tId);
         return tAcc + (t?.price ?? 0);
@@ -254,33 +288,51 @@ export default function OrderPage() {
   const total = useMemo(() => subtotal + tax, [subtotal, tax]);
 
   const totalCount = useMemo(() => {
-    return lineItems.reduce((acc, li) => acc + (li.kind === "other" ? li.data.quantity : li.data.quantity), 0);
+    return lineItems.reduce(
+      (acc, li) => acc + (li.kind === "other" ? li.data.quantity : li.data.quantity),
+      0,
+    );
   }, [lineItems]);
 
   const upsertPizza = (base: MenuItem, customization: PizzaCustomization) => {
     setLineItems((prev) => {
       const key = makePizzaKey(base.id, customization);
-      const idx = prev.findIndex((li) => li.kind === "pizza" && makePizzaKey(li.data.base.id, li.data.customization) === key);
+      const idx = prev.findIndex(
+        (li) =>
+          li.kind === "pizza" &&
+          makePizzaKey(li.data.base.id, li.data.customization) === key,
+      );
       if (idx >= 0) {
         const copy = [...prev];
         const existing = copy[idx];
         if (existing.kind === "pizza") {
-          copy[idx] = { kind: "pizza", data: { ...existing.data, quantity: existing.data.quantity + 1 } };
+          copy[idx] = {
+            kind: "pizza",
+            data: { ...existing.data, quantity: existing.data.quantity + 1 },
+          };
         }
         return copy;
       }
-      return [...prev, { kind: "pizza", data: { id: key, base, quantity: 1, customization } }];
+      return [
+        ...prev,
+        { kind: "pizza", data: { id: key, base, quantity: 1, customization } },
+      ];
     });
   };
 
   const addOther = (item: MenuItem) => {
     setLineItems((prev) => {
-      const idx = prev.findIndex((li) => li.kind === "other" && li.data.item.id === item.id);
+      const idx = prev.findIndex(
+        (li) => li.kind === "other" && li.data.item.id === item.id,
+      );
       if (idx >= 0) {
         const copy = [...prev];
         const existing = copy[idx];
         if (existing.kind === "other") {
-          copy[idx] = { kind: "other", data: { ...existing.data, quantity: existing.data.quantity + 1 } };
+          copy[idx] = {
+            kind: "other",
+            data: { ...existing.data, quantity: existing.data.quantity + 1 },
+          };
         }
         return copy;
       }
@@ -293,10 +345,16 @@ export default function OrderPage() {
       return prev
         .map((li) => {
           if (li.kind === "pizza" && li.data.id === id) {
-            return { kind: "pizza", data: { ...li.data, quantity: Math.max(0, li.data.quantity - 1) } } as LineItem;
+            return {
+              kind: "pizza",
+              data: { ...li.data, quantity: Math.max(0, li.data.quantity - 1) },
+            } as LineItem;
           }
           if (li.kind === "other" && li.data.id === id) {
-            return { kind: "other", data: { ...li.data, quantity: Math.max(0, li.data.quantity - 1) } } as LineItem;
+            return {
+              kind: "other",
+              data: { ...li.data, quantity: Math.max(0, li.data.quantity - 1) },
+            } as LineItem;
           }
           return li;
         })
@@ -318,7 +376,11 @@ export default function OrderPage() {
     });
   };
 
-  const clearCart = () => setLineItems([]);
+  const clearCart = () => {
+    setLineItems([]);
+    setNotes("");
+    clearOrderSession();
+  };
 
   const handleCheckout = () => {
     setOrderStatus("processing");
@@ -360,7 +422,8 @@ export default function OrderPage() {
         </div>
         <h1 className="text-3xl font-bold">Order received!</h1>
         <p className="mt-2 text-muted-foreground">
-          Youre all set. This is a demo checkoutno payment processed. Well have it ready for pick-up in about 20 minutes.
+          You’re all set. This is a demo checkout—no payment processed. We’ll have it ready for
+          pick-up in about 20 minutes.
         </p>
         <div className="mt-6 grid w-full max-w-sm gap-2">
           <Link href="/">
@@ -369,7 +432,11 @@ export default function OrderPage() {
             </Button>
           </Link>
           <Link href="/menu">
-            <Button variant="outline" className="h-12 w-full rounded-xl" data-testid="button-success-menu">
+            <Button
+              variant="outline"
+              className="h-12 w-full rounded-xl"
+              data-testid="button-success-menu"
+            >
               Keep browsing menu
             </Button>
           </Link>
@@ -407,15 +474,16 @@ export default function OrderPage() {
             </div>
           </div>
 
-          <Link href="/menu">
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-order-menu"
-            >
-              Menu
-            </button>
-          </Link>
+          <button
+            type="button"
+            onClick={clearCart}
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+              totalCount === 0 ? "opacity-50" : "text-foreground/80 hover:text-foreground"
+            }`}
+            data-testid="button-order-clear"
+          >
+            Clear
+          </button>
         </div>
       </header>
 
@@ -468,7 +536,9 @@ export default function OrderPage() {
                   type="button"
                   onClick={() => setMode("pickup")}
                   className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                    mode === "pickup" ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:text-foreground"
+                    mode === "pickup"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-foreground/80 hover:text-foreground"
                   }`}
                   data-testid="tab-pickup"
                 >
@@ -478,7 +548,9 @@ export default function OrderPage() {
                   type="button"
                   onClick={() => setMode("delivery")}
                   className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                    mode === "delivery" ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:text-foreground"
+                    mode === "delivery"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-foreground/80 hover:text-foreground"
                   }`}
                   data-testid="tab-delivery"
                 >
@@ -491,7 +563,8 @@ export default function OrderPage() {
               <div className="mt-3 rounded-2xl border bg-accent p-4" data-testid="card-delivery-note">
                 <p className="text-sm font-semibold">Delivery demo</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  This prototype doesnt connect to a real delivery service yetbut you can still build a cart and go through checkout.
+                  This prototype doesn’t connect to a real delivery service yet—but you can still
+                  build a cart and go through checkout.
                 </p>
               </div>
             ) : null}
@@ -539,14 +612,15 @@ export default function OrderPage() {
                             </DrawerDescription>
                           </DrawerHeader>
 
-                          <PizzaCustomizer
-                            base={p}
-                            onAdd={(c) => upsertPizza(p, c)}
-                          />
+                          <PizzaCustomizer base={p} onAdd={(c) => upsertPizza(p, c)} />
 
                           <DrawerFooter className="border-t">
                             <DrawerClose asChild>
-                              <Button variant="outline" className="h-12 rounded-xl" data-testid={`button-close-customizer-${p.id}`}>
+                              <Button
+                                variant="outline"
+                                className="h-12 rounded-xl"
+                                data-testid={`button-close-customizer-${p.id}`}
+                              >
                                 Close
                               </Button>
                             </DrawerClose>
@@ -558,15 +632,12 @@ export default function OrderPage() {
                 </section>
 
                 {MENU.filter((c) => c.id !== "pizzas").map((cat) => (
-                  <section key={cat.id} className="space-y-4" data-testid={`section-order-${cat.id}`}
-                  >
-                    <div className="flex items-end justify-between gap-3">
-                      <div>
-                        <h3 className="text-xl font-bold">{cat.title}</h3>
-                        {cat.note ? (
-                          <p className="mt-1 text-sm text-muted-foreground">{cat.note}</p>
-                        ) : null}
-                      </div>
+                  <section key={cat.id} className="space-y-4" data-testid={`section-order-${cat.id}`}>
+                    <div>
+                      <h3 className="text-xl font-bold">{cat.title}</h3>
+                      {cat.note ? (
+                        <p className="mt-1 text-sm text-muted-foreground">{cat.note}</p>
+                      ) : null}
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -614,9 +685,7 @@ export default function OrderPage() {
                         type="button"
                         onClick={clearCart}
                         className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${
-                          totalCount === 0
-                            ? "pointer-events-none opacity-50"
-                            : "hover:bg-muted"
+                          totalCount === 0 ? "pointer-events-none opacity-50" : "hover:bg-muted"
                         }`}
                         data-testid="button-clear-cart"
                       >
@@ -629,9 +698,7 @@ export default function OrderPage() {
                     {totalCount === 0 ? (
                       <div className="rounded-2xl border bg-accent p-4" data-testid="empty-cart">
                         <p className="text-sm font-semibold">Tap items to add them</p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          Start with a pizza, then add wings + drinks.
-                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">Start with a pizza, then add wings + drinks.</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -712,9 +779,12 @@ export default function OrderPage() {
         <div className="fixed inset-x-0 bottom-0 z-50 p-4 md:hidden">
           <Drawer open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
             <DrawerTrigger asChild>
-              <Button className="h-14 w-full rounded-2xl text-lg font-bold shadow-xl" data-testid="button-mobile-view-order">
+              <Button
+                className="h-14 w-full rounded-2xl text-lg font-bold shadow-xl"
+                data-testid="button-mobile-view-order"
+              >
                 <ShoppingCart className="mr-2 size-5" aria-hidden="true" />
-                View order  {totalCount}  ${money(total)}
+                View order • {totalCount} • ${money(total)}
               </Button>
             </DrawerTrigger>
             <DrawerContent>
@@ -764,11 +834,7 @@ export default function OrderPage() {
                   </div>
                 </div>
 
-                <Button
-                  className="h-12 w-full rounded-xl"
-                  onClick={handleCheckout}
-                  data-testid="button-mobile-checkout"
-                >
+                <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
                   {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
                 </Button>
                 <DrawerClose asChild>
@@ -785,7 +851,7 @@ export default function OrderPage() {
       <footer className="pb-24 md:pb-8">
         <div className="container-page py-6">
           <p className="text-center text-xs text-muted-foreground" data-testid="text-order-footer">
-             {RESTAURANT.name}  Demo online ordering 
+            • {RESTAURANT.name} • Demo online ordering •
           </p>
         </div>
       </footer>
@@ -845,7 +911,11 @@ function PizzaCustomizer({
                 >
                   <p className="text-sm font-semibold">{s.name}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    {s.priceDelta === 0 ? "Included" : s.priceDelta > 0 ? `+ $${money(s.priceDelta)}` : `- $${money(Math.abs(s.priceDelta))}`}
+                    {s.priceDelta === 0
+                      ? "Included"
+                      : s.priceDelta > 0
+                        ? `+ $${money(s.priceDelta)}`
+                        : `- $${money(Math.abs(s.priceDelta))}`}
                   </p>
                 </button>
               );
@@ -864,7 +934,9 @@ function PizzaCustomizer({
                   key={t.id}
                   type="button"
                   onClick={() => {
-                    setToppingIds((prev) => (checked ? prev.filter((x) => x !== t.id) : [...prev, t.id]));
+                    setToppingIds((prev) =>
+                      checked ? prev.filter((x) => x !== t.id) : [...prev, t.id],
+                    );
                   }}
                   className={`flex items-center justify-between rounded-2xl border px-3 py-3 text-left transition ${
                     checked ? "border-primary/60 bg-accent" : "bg-background hover:bg-muted"
@@ -875,8 +947,17 @@ function PizzaCustomizer({
                     <p className="text-sm font-semibold">{t.name}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">+ ${money(t.price)}</p>
                   </div>
-                  <div className={`grid size-7 place-items-center rounded-full border ${checked ? "bg-primary text-primary-foreground border-primary" : "bg-background"}`}>
-                    <Check className={`size-4 ${checked ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
+                  <div
+                    className={`grid size-7 place-items-center rounded-full border ${
+                      checked
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background"
+                    }`}
+                  >
+                    <Check
+                      className={`size-4 ${checked ? "opacity-100" : "opacity-0"}`}
+                      aria-hidden="true"
+                    />
                   </div>
                 </button>
               );
