@@ -182,7 +182,7 @@ function CategorySection({ cat }: { cat: MenuCategory }) {
             </div>
 
             <div className="shrink-0">
-              <Link href="/order">
+              <Link href={`/order?item=${encodeURIComponent(item.id)}&from=menu`}>
                 <Button
                   size="sm"
                   className="rounded-xl"
@@ -257,7 +257,7 @@ export default function MenuPage() {
             </div>
 
             <div className="shrink-0">
-              <Link href="/order">
+              <Link href="/order?from=menu">
                 <Button className="h-11 rounded-2xl px-5 font-bold shadow-md" data-testid="button-menu-cta-order">
                   Order for pick-up
                 </Button>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   ChevronLeft,
   ShoppingCart,
@@ -234,6 +234,10 @@ function QuantityPill({
 }
 
 export default function OrderPage() {
+  const [location] = useLocation();
+  const params = useMemo(() => new URLSearchParams(location.split("?")[1] ?? ""), [location]);
+  const selectedFromMenu = params.get("item");
+
   const [mode, setMode] = useState<OrderMode>("pickup");
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -241,22 +245,32 @@ export default function OrderPage() {
     "idle",
   );
   const [notes, setNotes] = useState("");
+
+  const [menuPick, setMenuPick] = useState<MenuItem | null>(null);
+  const [menuPickOpen, setMenuPickOpen] = useState(false);
   const [restored, setRestored] = useState(false);
 
   const pizzas = useMemo(() => MENU.find((c) => c.id === "pizzas")?.items ?? [], []);
 
   useEffect(() => {
     const session = loadOrderSession();
-    if (!session) {
-      setRestored(true);
-      return;
+    if (session) {
+      setMode(session.mode);
+      setLineItems(session.lineItems as LineItem[]);
+      setNotes(session.notes);
     }
 
-    setMode(session.mode);
-    setLineItems(session.lineItems as LineItem[]);
-    setNotes(session.notes);
+    if (selectedFromMenu) {
+      const all = MENU.flatMap((c) => c.items);
+      const found = all.find((i) => i.id === selectedFromMenu) ?? null;
+      if (found) {
+        setMenuPick(found);
+        setMenuPickOpen(true);
+      }
+    }
+
     setRestored(true);
-  }, []);
+  }, [selectedFromMenu]);
 
   useEffect(() => {
     if (!restored) return;
@@ -596,7 +610,14 @@ export default function OrderPage() {
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     {pizzas.map((p) => (
-                      <Drawer key={p.id}>
+                      <Drawer
+                        key={p.id}
+                        open={menuPickOpen && menuPick?.id === p.id}
+                        onOpenChange={(open) => {
+                          setMenuPickOpen(open);
+                          setMenuPick(open ? p : null);
+                        }}
+                      >
                         <DrawerTrigger asChild>
                           <button
                             type="button"
@@ -629,7 +650,14 @@ export default function OrderPage() {
                             </DrawerDescription>
                           </DrawerHeader>
 
-                          <PizzaCustomizer base={p} onAdd={(c) => upsertPizza(p, c)} />
+                          <PizzaCustomizer
+                            base={p}
+                            onAdd={(c) => {
+                              upsertPizza(p, c);
+                              setMenuPickOpen(false);
+                              setMenuPick(null);
+                            }}
+                          />
 
                           <DrawerFooter className="border-t">
                             <DrawerClose asChild>
