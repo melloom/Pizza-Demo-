@@ -103,15 +103,26 @@ export default function ContactPage() {
           <p className="text-sm font-semibold" data-testid="text-contact-title">
             Contact & Location
           </p>
-          <Link href="/menu">
-            <button
-              type="button"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-nav-menu"
-            >
-              Menu
-            </button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/menu">
+              <button
+                type="button"
+                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                data-testid="link-nav-menu"
+              >
+                Menu
+              </button>
+            </Link>
+            <Link href="/about">
+              <button
+                type="button"
+                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                data-testid="link-nav-about"
+              >
+                About
+              </button>
+            </Link>
+          </div>
         </div>
       </header>
 

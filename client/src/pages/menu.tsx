@@ -218,15 +218,26 @@ export default function MenuPage() {
             <Flame className="size-4 text-primary" aria-hidden="true" />
             Menu
           </p>
-          <Link href="/contact">
-            <button
-              type="button"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-nav-contact"
-            >
-              Find Us
-            </button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/about">
+              <button
+                type="button"
+                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                data-testid="link-nav-about"
+              >
+                About
+              </button>
+            </Link>
+            <Link href="/contact">
+              <button
+                type="button"
+                className="text-sm font-medium text-foreground/80 hover:text-foreground"
+                data-testid="link-nav-contact"
+              >
+                Find Us
+              </button>
+            </Link>
+          </div>
         </div>
       </header>
 

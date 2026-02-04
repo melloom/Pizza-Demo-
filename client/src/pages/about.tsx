@@ -1,0 +1,272 @@
+import { Link } from "wouter";
+import { ChevronLeft, HeartHandshake, Flame, Clock, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import familyPhoto from "@/assets/pizza-family.png";
+import ovenPhoto from "@/assets/pizza-oven.png";
+import storefrontPhoto from "@/assets/pizza-storefront.png";
+
+const RESTAURANT = {
+  name: "Tony's Pizza Shack",
+  tagline: "Family-owned wood-fired pizza, made the slow way — ready the fast way.",
+  addressLine1: "456 Oven Ave",
+  addressLine2: "Pizza Heights, ST 12345",
+  mapsQuery: "456 Oven Ave Pizza Heights ST 12345",
+  founded: "2008",
+};
+
+function StatPill({
+  icon: Icon,
+  label,
+  value,
+  testId,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  testId: string;
+}) {
+  return (
+    <div
+      className="rounded-2xl border bg-card px-4 py-3 shadow-sm"
+      data-testid={testId}
+    >
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 grid size-9 place-items-center rounded-xl bg-accent text-foreground">
+          <Icon className="size-4" aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+          <p className="mt-0.5 text-sm font-semibold leading-tight">{value}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AboutPage() {
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    RESTAURANT.mapsQuery,
+  )}`;
+
+  return (
+    <div className="min-h-dvh bg-background">
+      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
+        <div className="container-page flex h-14 items-center justify-between">
+          <Link href="/">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 text-sm font-medium"
+              data-testid="link-back-home"
+            >
+              <ChevronLeft className="size-4" aria-hidden="true" />
+              Home
+            </button>
+          </Link>
+
+          <p className="text-sm font-semibold" data-testid="text-about-title">
+            About
+          </p>
+
+          <Link href="/order">
+            <button
+              type="button"
+              className="text-sm font-semibold text-primary hover:opacity-90"
+              data-testid="link-about-order"
+            >
+              Order
+            </button>
+          </Link>
+        </div>
+      </header>
+
+      <main className="container-page pb-24 pt-6">
+        <section
+          className="grain overflow-hidden rounded-3xl border bg-card shadow-sm"
+          data-testid="card-about-hero"
+        >
+          <div className="relative">
+            <div className="relative aspect-[4/5] sm:aspect-[21/9]">
+              <img
+                src={familyPhoto}
+                alt="Tony's Pizza Shack family team"
+                className="h-full w-full object-cover"
+                loading="lazy"
+                data-testid="img-about-hero"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                <h1
+                  className="text-balance text-4xl leading-[1.05] text-white sm:text-5xl"
+                  data-testid="text-about-heading"
+                >
+                  The family behind the oven.
+                </h1>
+                <p
+                  className="mt-3 max-w-[62ch] text-sm text-white/85 sm:text-base"
+                  data-testid="text-about-subheading"
+                >
+                  {RESTAURANT.tagline}
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/25 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur hover:bg-black/35"
+                    data-testid="link-about-directions"
+                  >
+                    <MapPin className="size-3.5" aria-hidden="true" />
+                    {RESTAURANT.addressLine1}
+                  </a>
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur"
+                    data-testid="pill-about-founded"
+                  >
+                    <Clock className="size-3.5" aria-hidden="true" />
+                    Serving since {RESTAURANT.founded}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-5 sm:p-8">
+              <div className="grid gap-3 sm:grid-cols-3" data-testid="grid-about-stats">
+                <StatPill
+                  icon={HeartHandshake}
+                  label="The promise"
+                  value="Treat every order like family"
+                  testId="pill-about-promise"
+                />
+                <StatPill
+                  icon={Flame}
+                  label="The oven"
+                  value="Wood-fired, high heat, quick bake"
+                  testId="pill-about-oven"
+                />
+                <StatPill
+                  icon={Clock}
+                  label="Pick-up"
+                  value="Fast, simple, and reliable"
+                  testId="pill-about-pickup"
+                />
+              </div>
+
+              <div className="mt-6 grid gap-4" data-testid="stack-about-story">
+                <section className="rounded-3xl border bg-card p-5 shadow-sm" data-testid="card-about-story-1">
+                  <p className="text-xs font-semibold text-muted-foreground">How it started</p>
+                  <h2 className="mt-2 text-2xl" data-testid="text-about-story-title-1">
+                    One oven. One family. One neighborhood.
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground" data-testid="text-about-story-body-1">
+                    Tony built this place on a simple idea: pizza should taste like it was made by a person who cares.
+                    The early days were loud, messy, and full of flour — but the oven never stopped.
+                  </p>
+                </section>
+
+                <section className="rounded-3xl border bg-accent p-5 shadow-sm" data-testid="card-about-story-2">
+                  <p className="text-xs font-semibold text-muted-foreground">The hard year</p>
+                  <h2 className="mt-2 text-2xl" data-testid="text-about-story-title-2">
+                    The lights got dim. The oven stayed warm.
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground" data-testid="text-about-story-body-2">
+                    There was a season when everything felt heavier — bills, repairs, long nights, and the kind of family
+                    loss you don’t really “get over.” We won’t make it graphic. Just real: the kind of hurt that shows
+                    up in the quiet after closing.
+                  </p>
+                  <p className="mt-3 text-sm text-muted-foreground" data-testid="text-about-story-body-2b">
+                    And still, the next day, somebody showed up early to feed the starter, fire the oven, and keep the
+                    promise.
+                  </p>
+                </section>
+
+                <div className="grid gap-4 sm:grid-cols-3" data-testid="grid-about-photos">
+                  <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
+                    <img
+                      src={ovenPhoto}
+                      alt="Wood-fired pizza oven"
+                      className="h-44 w-full object-cover"
+                      loading="lazy"
+                      data-testid="img-about-oven"
+                    />
+                    <div className="p-4">
+                      <p className="text-sm font-semibold">The fire</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        High heat, fast bake, crisp edges.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
+                    <img
+                      src={storefrontPhoto}
+                      alt="Pizza shop storefront"
+                      className="h-44 w-full object-cover"
+                      loading="lazy"
+                      data-testid="img-about-storefront"
+                    />
+                    <div className="p-4">
+                      <p className="text-sm font-semibold">The corner</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        A small shop that feels like home.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
+                    <img
+                      src={familyPhoto}
+                      alt="Family team preparing dough"
+                      className="h-44 w-full object-cover"
+                      loading="lazy"
+                      data-testid="img-about-family"
+                    />
+                    <div className="p-4">
+                      <p className="text-sm font-semibold">The people</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Same hands. Same care.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <section className="rounded-3xl border bg-card p-5 shadow-sm" data-testid="card-about-story-3">
+                  <p className="text-xs font-semibold text-muted-foreground">Why we still do it</p>
+                  <h2 className="mt-2 text-2xl" data-testid="text-about-story-title-3">
+                    Because somebody’s night depends on it.
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground" data-testid="text-about-story-body-3">
+                    A birthday. A bad day. A late shift. A team win. A quiet Friday.
+                    Our job is to make the kind of food that turns a rough day into a better one.
+                  </p>
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2" data-testid="about-ctas">
+                    <Link href="/order">
+                      <Button className="h-12 w-full rounded-2xl text-base font-bold shadow-md" data-testid="button-about-order">
+                        Order for pick-up
+                      </Button>
+                    </Link>
+                    <Link href="/menu">
+                      <Button variant="secondary" className="h-12 w-full rounded-2xl text-base" data-testid="button-about-menu">
+                        View menu
+                      </Button>
+                    </Link>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t">
+        <div className="container-page py-6 text-center sm:text-left">
+          <p className="text-xs text-muted-foreground" data-testid="text-about-footer">
+            © {new Date().getFullYear()} {RESTAURANT.name}. Thanks for supporting local.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}

@@ -291,6 +291,15 @@ export default function HomePage() {
                 Menu
               </button>
             </Link>
+            <Link href="/about">
+              <button
+                type="button"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
+                data-testid="link-nav-about"
+              >
+                About
+              </button>
+            </Link>
             <Link href="/order">
               <button
                 type="button"

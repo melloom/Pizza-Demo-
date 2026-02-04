@@ -8,6 +8,7 @@ import HomePage from "./pages/home";
 import MenuPage from "./pages/menu";
 import ContactPage from "./pages/contact";
 import OrderPage from "./pages/order";
+import AboutPage from "./pages/about";
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/menu" component={MenuPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/about" component={AboutPage} />
       <Route path="/order" component={OrderPage} />
       <Route component={NotFound} />
     </Switch>
