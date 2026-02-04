@@ -547,7 +547,7 @@ export default function OrderPage() {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-muted-foreground">Pick-up name</p>
-                  <p className="mt-1 text-sm font-semibold" data-testid="text-success-name">{customerName || "Guest"}</p>
+                  <p className="mt-1 text-sm font-semibold" data-testid="text-success-name">{customerName}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs font-semibold text-muted-foreground">Phone</p>
@@ -555,7 +555,7 @@ export default function OrderPage() {
                 </div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground" data-testid="text-success-email">
-                Confirmation (demo): {customerEmail}
+                Confirmation email (demo): {customerEmail}
               </p>
             </div>
 
