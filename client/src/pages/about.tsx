@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import familyPhoto from "@/assets/pizza-family.png";
 import ovenPhoto from "@/assets/pizza-oven.png";
 import storefrontPhoto from "@/assets/pizza-storefront.png";
+import ingredientsPhoto from "@/assets/ingredients.png";
+import doughPhoto from "@/assets/dough-making.png";
+import chefOvenPhoto from "@/assets/chef-oven.png";
+import interiorPhoto from "@/assets/interior.png";
 
 const RESTAURANT = {
   name: "Tony's Pizza Shack",
@@ -179,6 +183,73 @@ export default function AboutPage() {
                     And still, the next day, somebody showed up early to feed the starter, fire the oven, and keep the
                     promise.
                   </p>
+                </section>
+
+                <section className="grid gap-6 sm:grid-cols-2" data-testid="section-about-values">
+                  <div className="space-y-4">
+                    <img
+                      src={ingredientsPhoto}
+                      alt="Fresh pizza ingredients"
+                      className="aspect-video w-full rounded-2xl object-cover shadow-sm"
+                      loading="lazy"
+                    />
+                    <h3 className="text-xl font-bold">The Ingredients</h3>
+                    <p className="text-sm text-muted-foreground">
+                      We don't cut corners. San Marzano tomatoes, fresh basil from the garden, and flour that we mill ourselves.
+                      It costs more, and it takes longer, but you can taste the difference in every bite.
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    <img
+                      src={doughPhoto}
+                      alt="Hand-stretched dough"
+                      className="aspect-video w-full rounded-2xl object-cover shadow-sm"
+                      loading="lazy"
+                    />
+                    <h3 className="text-xl font-bold">The Process</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Our dough ferments for 48 hours. It's a living thing that needs attention, patience, and a little bit of love.
+                      By the time it hits the oven, it's light, airy, and full of flavor.
+                    </p>
+                  </div>
+                </section>
+
+                <div className="relative overflow-hidden rounded-3xl border bg-card shadow-sm">
+                  <img
+                    src={chefOvenPhoto}
+                    alt="Chef at the oven"
+                    className="aspect-video w-full object-cover sm:aspect-[21/9]"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white">
+                    <p className="text-lg font-serif italic">"If it's not perfect, it doesn't leave the kitchen."</p>
+                    <p className="mt-1 text-sm opacity-90">— Tony, Founder</p>
+                  </div>
+                </div>
+
+                <section className="rounded-3xl border bg-card p-6 shadow-sm" data-testid="section-about-atmosphere">
+                  <div className="flex flex-col gap-6 md:flex-row md:items-center">
+                    <div className="md:w-1/2">
+                      <h2 className="text-2xl font-bold">A Place for the Community</h2>
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        We built this shop to be more than just a place to get food. It's a place where neighbors meet, 
+                        where kids get their first slice, and where the air always smells like burning oak and melting mozzarella.
+                      </p>
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        Whether you're grabbing a quick lunch or bringing the whole family for dinner, we want you to feel 
+                        like you're part of our story.
+                      </p>
+                    </div>
+                    <div className="md:w-1/2">
+                      <img
+                        src={interiorPhoto}
+                        alt="Restaurant interior"
+                        className="rounded-2xl object-cover shadow-md"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
                 </section>
 
                 <div className="grid gap-4 sm:grid-cols-3" data-testid="grid-about-photos">
