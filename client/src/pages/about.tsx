@@ -161,8 +161,11 @@ export default function AboutPage() {
                     One oven. One family. One neighborhood.
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground" data-testid="text-about-story-body-1">
-                    Tony built this place on a simple idea: pizza should taste like it was made by a person who cares.
-                    The early days were loud, messy, and full of flour — but the oven never stopped.
+                    Tony built this place on a simple idea: pizza should taste like it was made by a person who cares. 
+                    In the beginning, it was just a tiny storefront with a borrowed mixer and a mountain of ambition. 
+                    The early days were loud, messy, and full of flour — but the oven never stopped. Tony would sleep 
+                    on the flour sacks just to be ready for the 4 AM dough prep, making sure every crust was perfect 
+                    before the first neighbor knocked on the door.
                   </p>
                 </section>
 
@@ -172,13 +175,15 @@ export default function AboutPage() {
                     The lights got dim. The oven stayed warm.
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground" data-testid="text-about-story-body-2">
-                    There was a season when everything felt heavier — bills, repairs, long nights, and the kind of family
-                    loss you don’t really “get over.” We won’t make it graphic. Just real: the kind of hurt that shows
-                    up in the quiet after closing.
+                    There was a season when everything felt heavier — bills, repairs, long nights, and the kind of family 
+                    loss you don’t really “get over.” We won’t make it graphic. Just real: the kind of hurt that shows 
+                    up in the quiet after closing, when the flour dust settles and the registers are empty. We almost 
+                    lost the lease, and for three months, we worked without heat just to keep the gas on for the oven.
                   </p>
                   <p className="mt-3 text-sm text-muted-foreground" data-testid="text-about-story-body-2b">
-                    And still, the next day, somebody showed up early to feed the starter, fire the oven, and keep the
-                    promise.
+                    And still, the next day, somebody showed up early to feed the starter, fire the oven, and keep the 
+                    promise. It wasn't about the money anymore; it was about the legacy of the man who started it all 
+                    and the community that refused to let us fail.
                   </p>
                 </section>
 
