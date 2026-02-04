@@ -243,6 +243,7 @@ export default function OrderPage() {
   const [mode, setMode] = useState<OrderMode>("pickup");
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isPayOnlineOpen, setIsPayOnlineOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState<"idle" | "processing" | "success">(
     "idle",
   );
@@ -458,6 +459,12 @@ export default function OrderPage() {
       return;
     }
 
+    if (paymentOption === "pay-online") {
+      setIsCheckoutOpen(false);
+      setIsPayOnlineOpen(true);
+      return;
+    }
+
     setIsCheckoutOpen(false);
     setOrderStatus("processing");
     setTimeout(() => {
@@ -489,6 +496,15 @@ export default function OrderPage() {
       };
     });
   }, [lineItems]);
+
+  const finalizeOrder = () => {
+    setIsPayOnlineOpen(false);
+    setOrderStatus("processing");
+    setTimeout(() => {
+      setOrderStatus("success");
+      clearCart();
+    }, 1400);
+  };
 
   if (orderStatus === "success") {
     const orderNumber = Math.floor(1000 + Math.random() * 9000);
@@ -597,6 +613,104 @@ export default function OrderPage() {
 
   return (
     <div className="min-h-dvh bg-background">
+      <Dialog open={isPayOnlineOpen} onOpenChange={setIsPayOnlineOpen}>
+        <DialogContent className="p-0">
+          <DialogHeader className="border-b p-5">
+            <DialogTitle data-testid="text-payonline-title">Pay online (demo)</DialogTitle>
+            <DialogDescription data-testid="text-payonline-subtitle">
+              This is a fake payment flow for the demo site. No card is charged.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="p-5">
+            <div className="rounded-3xl border bg-card p-4 shadow-sm" data-testid="card-payonline">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-muted-foreground">Paying</p>
+                  <p className="mt-1 text-base font-bold" data-testid="text-payonline-merchant">
+                    {RESTAURANT.name}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground" data-testid="text-payonline-customer">
+                    {customerName} • {customerEmail}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs font-semibold text-muted-foreground">Total</p>
+                  <p className="mt-1 text-lg font-bold tabular-nums text-primary" data-testid="text-payonline-total">
+                    ${money(total)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-3">
+                <div className="grid gap-2" data-testid="field-card-number">
+                  <label className="text-xs font-semibold text-muted-foreground" htmlFor="demo-card-number">
+                    Card number
+                  </label>
+                  <input
+                    id="demo-card-number"
+                    className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    placeholder="4242 4242 4242 4242"
+                    defaultValue="4242 4242 4242 4242"
+                    inputMode="numeric"
+                    data-testid="input-demo-card-number"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="grid gap-2" data-testid="field-exp">
+                    <label className="text-xs font-semibold text-muted-foreground" htmlFor="demo-card-exp">
+                      Exp
+                    </label>
+                    <input
+                      id="demo-card-exp"
+                      className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                      placeholder="12/34"
+                      defaultValue="12/34"
+                      inputMode="numeric"
+                      data-testid="input-demo-card-exp"
+                    />
+                  </div>
+                  <div className="grid gap-2" data-testid="field-cvc">
+                    <label className="text-xs font-semibold text-muted-foreground" htmlFor="demo-card-cvc">
+                      CVC
+                    </label>
+                    <input
+                      id="demo-card-cvc"
+                      className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                      placeholder="123"
+                      defaultValue="123"
+                      inputMode="numeric"
+                      data-testid="input-demo-card-cvc"
+                    />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border bg-accent p-3 text-xs text-muted-foreground" data-testid="text-payonline-note">
+                  Tip: Use any values here — its a demo UI only.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="border-t p-4">
+            <div className="w-full space-y-2">
+              <Button
+                className="h-12 w-full rounded-2xl text-base font-bold"
+                onClick={finalizeOrder}
+                data-testid="button-payonline-confirm"
+              >
+                Pay ${money(total)} (demo)
+              </Button>
+              <DialogClose asChild>
+                <Button variant="outline" className="h-12 w-full rounded-2xl" data-testid="button-payonline-cancel">
+                  Cancel
+                </Button>
+              </DialogClose>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
         <div className="container-page flex h-14 items-center justify-between">
           <Link href="/">
