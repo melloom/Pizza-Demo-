@@ -1,17 +1,27 @@
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ChevronLeft, ShoppingCart, Pizza } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Pizza, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const RESTAURANT = {
   name: "Tony's Pizza Shack",
-  onlineOrderUrl: "https://example.com/order",
 };
 
 type MenuItem = {
   id: string;
   name: string;
   description?: string;
-  price: string;
+  price: number;
 };
 
 type MenuCategory = {
@@ -31,25 +41,25 @@ const MENU: MenuCategory[] = [
         id: "classic-pepperoni",
         name: "Classic Pepperoni",
         description: "Old-world pepperoni, mozzarella, tomato sauce.",
-        price: "$18",
+        price: 18,
       },
       {
         id: "margherita",
         name: "Margherita",
         description: "Fresh mozzarella, basil, extra virgin olive oil.",
-        price: "$16",
+        price: 16,
       },
       {
         id: "meat-lovers",
         name: "The Meat Shack",
         description: "Pepperoni, sausage, bacon, ham.",
-        price: "$22",
+        price: 22,
       },
       {
         id: "veggie-delight",
         name: "Garden Veggie",
         description: "Bell peppers, onions, mushrooms, olives.",
-        price: "$19",
+        price: 19,
       },
     ],
   },
@@ -62,13 +72,13 @@ const MENU: MenuCategory[] = [
         id: "garlic-knots",
         name: "Garlic Knots (6pc)",
         description: "Served with warm marinara.",
-        price: "$8",
+        price: 8,
       },
       {
         id: "buffalo-wings",
         name: "Spicy Buffalo Wings",
         description: "8 jumbo wings with celery & ranch.",
-        price: "$14",
+        price: 14,
       },
     ],
   },
@@ -76,13 +86,15 @@ const MENU: MenuCategory[] = [
     id: "drinks",
     title: "Cold Drinks",
     items: [
-      { id: "coke", name: "Mexican Coke", price: "$3.50" },
-      { id: "water", name: "San Pellegrino", price: "$4" },
+      { id: "coke", name: "Mexican Coke", price: 3.5 },
+      { id: "water", name: "San Pellegrino", price: 4 },
     ],
   },
 ];
 
-function CategoryBlock({ cat }: { cat: MenuCategory }) {
+type CartItem = MenuItem & { quantity: number };
+
+function CategoryBlock({ cat, onAdd }: { cat: MenuCategory, onAdd: (item: MenuItem) => void }) {
   return (
     <section
       className="rounded-2xl border bg-card shadow-sm"
@@ -92,7 +104,7 @@ function CategoryBlock({ cat }: { cat: MenuCategory }) {
       <div className="border-b p-4">
         <h2
           id={`heading-${cat.id}`}
-          className="text-xl"
+          className="text-xl font-bold"
           data-testid={`text-category-title-${cat.id}`}
         >
           {cat.title}
@@ -129,13 +141,16 @@ function CategoryBlock({ cat }: { cat: MenuCategory }) {
                   {item.description}
                 </p>
               ) : null}
+              <p className="mt-2 font-bold text-primary">${item.price}</p>
             </div>
-            <p
-              className="shrink-0 text-base font-semibold tabular-nums"
-              data-testid={`text-item-price-${item.id}`}
+            <Button 
+              size="sm" 
+              className="shrink-0 rounded-lg"
+              onClick={() => onAdd(item)}
+              data-testid={`button-add-${item.id}`}
             >
-              {item.price}
-            </p>
+              Add
+            </Button>
           </div>
         ))}
       </div>
@@ -143,22 +158,32 @@ function CategoryBlock({ cat }: { cat: MenuCategory }) {
   );
 }
 
-function BottomOrderBar() {
-  return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:hidden">
-      <div className="container-page pb-3">
-        <div className="pointer-events-auto rounded-2xl border bg-primary text-primary-foreground shadow-lg">
-          <a href={RESTAURANT.onlineOrderUrl} className="flex items-center justify-center gap-2 p-4">
-            <ShoppingCart className="size-5" aria-hidden="true" />
-            <span className="font-bold">Order Online Now</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function MenuPage() {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0) * 1.08;
+
+  const addToCart = (item: MenuItem) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (id: string, delta: number) => {
+    setCart((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
   return (
     <div className="min-h-dvh bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
@@ -203,33 +228,32 @@ export default function MenuPage() {
           >
             Hand-tossed sourdough crust, wood-fired to perfection. 
           </p>
-          <div className="mt-4 flex gap-2">
-            <a href={RESTAURANT.onlineOrderUrl} target="_blank" rel="noreferrer">
+          <div className="mt-4">
+            <Link href="/order">
               <Button className="rounded-xl shadow-md">
                 Order for Pick-up
               </Button>
-            </a>
+            </Link>
           </div>
         </section>
 
         <div className="mt-6 grid gap-4">
           {MENU.map((cat) => (
-            <CategoryBlock key={cat.id} cat={cat} />
+            <CategoryBlock key={cat.id} cat={cat} onAdd={addToCart} />
           ))}
         </div>
-
-        <section
-          className="mt-6 rounded-2xl border bg-accent p-4"
-          data-testid="card-menu-note"
-        >
-          <p className="text-sm font-medium">Pizza Sizes</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            All signature pizzas come in a standard 14" size. Gluten-free crust available for +$3.
-          </p>
-        </section>
       </main>
 
-      <BottomOrderBar />
+      {cart.length > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-50 p-4">
+          <Link href="/order">
+            <Button className="h-14 w-full rounded-2xl text-lg font-bold shadow-xl">
+              <ShoppingCart className="mr-2 size-5" />
+              Go to Checkout • ${total.toFixed(2)}
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

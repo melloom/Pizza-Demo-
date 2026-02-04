@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { MapPin, Phone, UtensilsCrossed, Pizza, ShoppingCart } from "lucide-react";
+import { MapPin, Phone, Pizza, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pizzaHero from "@/assets/pizza-hero.png";
 
@@ -11,7 +11,6 @@ const RESTAURANT = {
   addressLine1: "456 Oven Ave",
   addressLine2: "Pizza Heights, ST 12345",
   mapsQuery: "456 Oven Ave Pizza Heights ST 12345",
-  onlineOrderUrl: "https://example.com/order",
   hours: [
     { day: "Mon", hours: "4:00 PM – 10:00 PM" },
     { day: "Tue", hours: "4:00 PM – 10:00 PM" },
@@ -29,7 +28,7 @@ function PrimaryActions() {
   )}`;
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <a href={RESTAURANT.onlineOrderUrl} target="_blank" rel="noreferrer" className="block">
+      <Link href="/order">
         <Button
           data-testid="button-order-now"
           className="h-12 w-full rounded-xl text-base shadow-lg bg-primary hover:bg-primary/90"
@@ -37,7 +36,7 @@ function PrimaryActions() {
           <ShoppingCart className="mr-2 size-4" aria-hidden="true" />
           Order Online
         </Button>
-      </a>
+      </Link>
       <Link href="/menu">
         <Button
           data-testid="button-view-menu"
@@ -155,7 +154,7 @@ function BottomCallBar() {
                 Hot & fresh in 20 mins
               </p>
             </div>
-            <a href={RESTAURANT.onlineOrderUrl} className="ml-auto">
+            <Link href="/order" className="ml-auto">
               <Button
                 data-testid="button-bottom-order-now"
                 className="h-11 rounded-xl px-4"
@@ -163,7 +162,7 @@ function BottomCallBar() {
                 <ShoppingCart className="mr-2 size-4" aria-hidden="true" />
                 Order Now
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
