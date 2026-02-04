@@ -1,9 +1,6 @@
 import { Link } from "wouter";
 import { ChevronLeft, HeartHandshake, Flame, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import familyPhoto from "@/assets/pizza-family.png";
-import ovenPhoto from "@/assets/pizza-oven.png";
-import storefrontPhoto from "@/assets/pizza-storefront.png";
 import ingredientsPhoto from "@/assets/ingredients.png";
 import doughPhoto from "@/assets/dough-making.png";
 import chefOvenPhoto from "@/assets/chef-oven.png";
@@ -91,7 +88,7 @@ export default function AboutPage() {
           <div className="relative">
             <div className="relative aspect-[4/5] sm:aspect-[21/9]">
               <img
-                src={familyPhoto}
+                src={chefOvenPhoto}
                 alt="Tony's Pizza Shack family team"
                 className="h-full w-full object-cover"
                 loading="lazy"
@@ -252,51 +249,35 @@ export default function AboutPage() {
                   </div>
                 </section>
 
-                <div className="grid gap-4 sm:grid-cols-3" data-testid="grid-about-photos">
+                <div className="grid gap-4 sm:grid-cols-2" data-testid="grid-about-photos">
                   <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
                     <img
-                      src={ovenPhoto}
-                      alt="Wood-fired pizza oven"
+                      src={ingredientsPhoto}
+                      alt="Fresh ingredients"
                       className="h-44 w-full object-cover"
                       loading="lazy"
-                      data-testid="img-about-oven"
+                      data-testid="img-about-ingredients-grid"
                     />
                     <div className="p-4">
-                      <p className="text-sm font-semibold">The fire</p>
+                      <p className="text-sm font-semibold">The source</p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        High heat, fast bake, crisp edges.
+                        Fresh basil and San Marzano tomatoes.
                       </p>
                     </div>
                   </div>
 
                   <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
                     <img
-                      src={storefrontPhoto}
-                      alt="Pizza shop storefront"
+                      src={interiorPhoto}
+                      alt="Pizza shop interior"
                       className="h-44 w-full object-cover"
                       loading="lazy"
-                      data-testid="img-about-storefront"
+                      data-testid="img-about-interior-grid"
                     />
                     <div className="p-4">
-                      <p className="text-sm font-semibold">The corner</p>
+                      <p className="text-sm font-semibold">The atmosphere</p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        A small shop that feels like home.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-2xl border bg-card shadow-sm sm:col-span-1">
-                    <img
-                      src={familyPhoto}
-                      alt="Family team preparing dough"
-                      className="h-44 w-full object-cover"
-                      loading="lazy"
-                      data-testid="img-about-family"
-                    />
-                    <div className="p-4">
-                      <p className="text-sm font-semibold">The people</p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Same hands. Same care.
+                        Warm, cozy, and always smells like pizza.
                       </p>
                     </div>
                   </div>
