@@ -15,15 +15,15 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import heroPizza from "@/assets/pizza-oven.png";
 import {
   clearOrderSession,
@@ -610,7 +610,7 @@ export default function OrderPage() {
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     {pizzas.map((p) => (
-                      <Drawer
+                      <Dialog
                         key={p.id}
                         open={menuPickOpen && menuPick?.id === p.id}
                         onOpenChange={(open) => {
@@ -618,7 +618,7 @@ export default function OrderPage() {
                           setMenuPick(open ? p : null);
                         }}
                       >
-                        <DrawerTrigger asChild>
+                        <DialogTrigger asChild>
                           <button
                             type="button"
                             className="group flex flex-col items-start rounded-2xl border bg-card p-4 text-left shadow-sm transition-all hover:border-primary/50 hover:shadow-md active:scale-[0.98]"
@@ -640,15 +640,15 @@ export default function OrderPage() {
                               </div>
                             </div>
                           </button>
-                        </DrawerTrigger>
+                        </DialogTrigger>
 
-                        <DrawerContent>
-                          <DrawerHeader>
-                            <DrawerTitle data-testid={`text-customize-title-${p.id}`}>{p.name}</DrawerTitle>
-                            <DrawerDescription data-testid={`text-customize-desc-${p.id}`}>
+                        <DialogContent className="p-0">
+                          <DialogHeader className="border-b p-5">
+                            <DialogTitle data-testid={`text-customize-title-${p.id}`}>{p.name}</DialogTitle>
+                            <DialogDescription data-testid={`text-customize-desc-${p.id}`}>
                               Pick a size and toppings. Then add it to your cart.
-                            </DrawerDescription>
-                          </DrawerHeader>
+                            </DialogDescription>
+                          </DialogHeader>
 
                           <PizzaCustomizer
                             base={p}
@@ -659,8 +659,8 @@ export default function OrderPage() {
                             }}
                           />
 
-                          <DrawerFooter className="border-t">
-                            <DrawerClose asChild>
+                          <DialogFooter className="border-t p-4">
+                            <DialogClose asChild>
                               <Button
                                 variant="outline"
                                 className="h-12 rounded-xl"
@@ -668,10 +668,10 @@ export default function OrderPage() {
                               >
                                 Close
                               </Button>
-                            </DrawerClose>
-                          </DrawerFooter>
-                        </DrawerContent>
-                      </Drawer>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     ))}
                   </div>
                 </section>
@@ -822,8 +822,8 @@ export default function OrderPage() {
 
       {totalCount > 0 ? (
         <div className="fixed inset-x-0 bottom-0 z-50 p-4 md:hidden">
-          <Drawer open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
-            <DrawerTrigger asChild>
+          <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
+            <DialogTrigger asChild>
               <Button
                 className="h-14 w-full rounded-2xl text-lg font-bold shadow-xl"
                 data-testid="button-mobile-view-order"
@@ -831,16 +831,16 @@ export default function OrderPage() {
                 <ShoppingCart className="mr-2 size-5" aria-hidden="true" />
                 View order • {totalCount} • ${money(total)}
               </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle data-testid="text-mobile-cart-title">Your order</DrawerTitle>
-                <DrawerDescription data-testid="text-mobile-cart-subtitle">
+            </DialogTrigger>
+            <DialogContent className="p-0">
+              <DialogHeader className="border-b p-5">
+                <DialogTitle data-testid="text-mobile-cart-title">Your order</DialogTitle>
+                <DialogDescription data-testid="text-mobile-cart-subtitle">
                   Review items, adjust quantities, then place your pick-up order.
-                </DrawerDescription>
-              </DrawerHeader>
+                </DialogDescription>
+              </DialogHeader>
 
-              <div className="max-h-[52vh] space-y-4 overflow-auto px-4 py-2" data-testid="list-mobile-cart-items">
+              <div className="max-h-[52vh] space-y-4 overflow-auto px-5 py-4" data-testid="list-mobile-cart-items">
                 {summaryLines.map((l) => (
                   <div key={l.id} className="flex items-start justify-between gap-3 rounded-2xl border bg-card p-3">
                     <div className="min-w-0">
@@ -863,33 +863,35 @@ export default function OrderPage() {
                 ))}
               </div>
 
-              <DrawerFooter className="border-t">
-                <div className="space-y-2 text-sm" data-testid="mobile-cart-totals">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>${money(subtotal)}</span>
+              <DialogFooter className="border-t p-4">
+                <div className="w-full space-y-3">
+                  <div className="space-y-2 text-sm" data-testid="mobile-cart-totals">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span>${money(subtotal)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Tax</span>
+                      <span>${money(tax)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold">
+                      <span>Total</span>
+                      <span>${money(total)}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax</span>
-                    <span>${money(tax)}</span>
-                  </div>
-                  <div className="flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>${money(total)}</span>
-                  </div>
-                </div>
 
-                <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
-                  {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
-                </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline" className="rounded-xl" data-testid="button-mobile-cancel">
-                    Keep shopping
+                  <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
+                    {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
                   </Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
+                  <DialogClose asChild>
+                    <Button variant="outline" className="w-full rounded-xl" data-testid="button-mobile-cancel">
+                      Keep shopping
+                    </Button>
+                  </DialogClose>
+                </div>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       ) : null}
 
