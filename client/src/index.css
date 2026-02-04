@@ -145,6 +145,15 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 
+  /* Remove Replit Badge */
+  #replit-badge {
+    display: none !important;
+  }
+  
+  iframe[src*="replit.com"] {
+    display: none !important;
+  }
+
   h1,
   h2,
   h3 {
