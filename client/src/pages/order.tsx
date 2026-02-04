@@ -115,6 +115,8 @@ const MENU: MenuCategory[] = [
 
 type OrderMode = "pickup" | "delivery";
 
+type PaymentOption = "pay-in-store" | "pay-online";
+
 type Topping = {
   id: string;
   name: string;
@@ -245,6 +247,11 @@ export default function OrderPage() {
     "idle",
   );
   const [notes, setNotes] = useState("");
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [paymentOption, setPaymentOption] = useState<PaymentOption>("pay-in-store");
 
   const [menuPick, setMenuPick] = useState<MenuItem | null>(null);
   const [menuPickOpen, setMenuPickOpen] = useState(false);
@@ -410,6 +417,10 @@ export default function OrderPage() {
   const clearCart = () => {
     setLineItems([]);
     setNotes("");
+    setCustomerName("");
+    setCustomerEmail("");
+    setCustomerPhone("");
+    setPaymentOption("pay-in-store");
     clearOrderSession();
   };
 
@@ -418,6 +429,31 @@ export default function OrderPage() {
       toast({
         title: "Your cart is empty",
         description: "Add a pizza or a side to place a pick-up order.",
+      });
+      return;
+    }
+
+    if (!customerName.trim()) {
+      toast({
+        title: "Add your name",
+        description: "So we know whose pick-up order this is.",
+      });
+      return;
+    }
+
+    if (!customerEmail.trim() || !customerEmail.includes("@")) {
+      toast({
+        title: "Add a valid email",
+        description: "We’ll send your demo confirmation there.",
+      });
+      return;
+    }
+
+    const digits = customerPhone.replace(/\D/g, "");
+    if (digits.length < 10) {
+      toast({
+        title: "Add a phone number",
+        description: "Just in case we need to reach you about your order.",
       });
       return;
     }
@@ -456,6 +492,10 @@ export default function OrderPage() {
 
   if (orderStatus === "success") {
     const orderNumber = Math.floor(1000 + Math.random() * 9000);
+    const mapsQuery = "456 Oven Ave Pizza Heights ST 12345";
+    const addressLine1 = "456 Oven Ave";
+    const addressLine2 = "Pizza Heights, ST 12345";
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
 
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center p-6 text-center">
@@ -472,14 +512,56 @@ export default function OrderPage() {
             <p className="text-xs font-semibold text-muted-foreground">Order #</p>
             <p className="text-sm font-bold tabular-nums" data-testid="text-success-order-number">{orderNumber}</p>
           </div>
-          <div className="mt-3 flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground">Pick-up</p>
-              <p className="mt-1 text-sm font-semibold" data-testid="text-success-pickup-eta">{RESTAURANT.pickupEta}</p>
+
+          <div className="mt-3 grid gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground">Pick-up</p>
+                <p className="mt-1 text-sm font-semibold" data-testid="text-success-pickup-eta">{RESTAURANT.pickupEta}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-semibold text-muted-foreground">Payment</p>
+                <p className="mt-1 text-sm font-semibold" data-testid="text-success-payment">
+                  {paymentOption === "pay-online" ? "Pay online (demo)" : "Pay in store"}
+                </p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs font-semibold text-muted-foreground">Name</p>
-              <p className="mt-1 text-sm font-semibold" data-testid="text-success-name">Guest</p>
+
+            <div className="rounded-2xl border bg-accent p-3" data-testid="card-success-contact">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-muted-foreground">Pick-up name</p>
+                  <p className="mt-1 text-sm font-semibold" data-testid="text-success-name">{customerName || "Guest"}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs font-semibold text-muted-foreground">Phone</p>
+                  <p className="mt-1 text-sm font-semibold tabular-nums" data-testid="text-success-phone">{customerPhone}</p>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground" data-testid="text-success-email">
+                Confirmation (demo): {customerEmail}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border bg-card p-3" data-testid="card-success-location">
+              <p className="text-xs font-semibold text-muted-foreground">Pick-up location</p>
+              <p className="mt-1 text-sm font-semibold" data-testid="text-success-address-line1">{addressLine1}</p>
+              <p className="text-sm text-muted-foreground" data-testid="text-success-address-line2">{addressLine2}</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <a href={mapsUrl} target="_blank" rel="noreferrer" className="block">
+                  <Button className="h-11 w-full rounded-2xl" data-testid="button-success-directions">
+                    Get directions
+                  </Button>
+                </a>
+                <a href="tel:+15559876543" className="block">
+                  <Button variant="secondary" className="h-11 w-full rounded-2xl" data-testid="button-success-call">
+                    Call store
+                  </Button>
+                </a>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground" data-testid="text-success-parking">
+                Tip: Parking is behind the building. Walk in and ask for the pick-up shelf.
+              </p>
             </div>
           </div>
         </div>
@@ -839,14 +921,97 @@ export default function OrderPage() {
                           />
                         </div>
 
-                        <Button
-                          className="h-12 w-full rounded-2xl text-base font-bold shadow-md"
-                          onClick={handleCheckout}
-                          data-testid="button-checkout-desktop"
-                        >
-                          <ShoppingCart className="mr-2 size-4" aria-hidden="true" />
-                          Checkout
-                        </Button>
+                        <div className="space-y-3" data-testid="checkout-form">
+                          <div className="grid gap-2" data-testid="field-name">
+                            <label className="text-xs font-semibold text-muted-foreground" htmlFor="checkout-name">
+                              Name
+                            </label>
+                            <input
+                              id="checkout-name"
+                              className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              placeholder="Your name"
+                              value={customerName}
+                              onChange={(e) => setCustomerName(e.target.value)}
+                              data-testid="input-checkout-name"
+                              autoComplete="name"
+                            />
+                          </div>
+
+                          <div className="grid gap-2" data-testid="field-email">
+                            <label className="text-xs font-semibold text-muted-foreground" htmlFor="checkout-email">
+                              Email
+                            </label>
+                            <input
+                              id="checkout-email"
+                              className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              placeholder="you@email.com"
+                              value={customerEmail}
+                              onChange={(e) => setCustomerEmail(e.target.value)}
+                              data-testid="input-checkout-email"
+                              autoComplete="email"
+                              inputMode="email"
+                            />
+                          </div>
+
+                          <div className="grid gap-2" data-testid="field-phone">
+                            <label className="text-xs font-semibold text-muted-foreground" htmlFor="checkout-phone">
+                              Phone
+                            </label>
+                            <input
+                              id="checkout-phone"
+                              className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                              placeholder="(555) 555-5555"
+                              value={customerPhone}
+                              onChange={(e) => setCustomerPhone(e.target.value)}
+                              data-testid="input-checkout-phone"
+                              autoComplete="tel"
+                              inputMode="tel"
+                            />
+                          </div>
+
+                          <div className="grid gap-2" data-testid="field-payment">
+                            <p className="text-xs font-semibold text-muted-foreground" data-testid="label-payment">
+                              Payment option
+                            </p>
+                            <div className="grid gap-2 sm:grid-cols-2" data-testid="toggle-payment">
+                              <button
+                                type="button"
+                                onClick={() => setPaymentOption("pay-in-store")}
+                                className={`rounded-2xl border px-3 py-3 text-left transition ${
+                                  paymentOption === "pay-in-store"
+                                    ? "border-primary/60 bg-accent shadow-sm"
+                                    : "bg-background hover:bg-muted"
+                                }`}
+                                data-testid="button-pay-in-store"
+                              >
+                                <p className="text-sm font-semibold">Pay in store</p>
+                                <p className="mt-0.5 text-xs text-muted-foreground">Cash or card at pickup</p>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setPaymentOption("pay-online")}
+                                className={`rounded-2xl border px-3 py-3 text-left transition ${
+                                  paymentOption === "pay-online"
+                                    ? "border-primary/60 bg-accent shadow-sm"
+                                    : "bg-background hover:bg-muted"
+                                }`}
+                                data-testid="button-pay-online"
+                              >
+                                <p className="text-sm font-semibold">Pay online (demo)</p>
+                                <p className="mt-0.5 text-xs text-muted-foreground">No real payment</p>
+                              </button>
+                            </div>
+                          </div>
+
+                          <Button
+                            className="h-12 w-full rounded-2xl text-base font-bold shadow-md"
+                            onClick={handleCheckout}
+                            data-testid="button-checkout-desktop"
+                          >
+                            <ShoppingCart className="mr-2 size-4" aria-hidden="true" />
+                            Place pick-up order
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -917,9 +1082,92 @@ export default function OrderPage() {
                     </div>
                   </div>
 
-                  <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
-                    {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
-                  </Button>
+                  <div className="space-y-3" data-testid="mobile-checkout-form">
+                    <div className="grid gap-2" data-testid="mfield-name">
+                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-name">
+                        Name
+                      </label>
+                      <input
+                        id="m-checkout-name"
+                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                        placeholder="Your name"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        data-testid="input-mcheckout-name"
+                        autoComplete="name"
+                      />
+                    </div>
+
+                    <div className="grid gap-2" data-testid="mfield-email">
+                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-email">
+                        Email
+                      </label>
+                      <input
+                        id="m-checkout-email"
+                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                        placeholder="you@email.com"
+                        value={customerEmail}
+                        onChange={(e) => setCustomerEmail(e.target.value)}
+                        data-testid="input-mcheckout-email"
+                        autoComplete="email"
+                        inputMode="email"
+                      />
+                    </div>
+
+                    <div className="grid gap-2" data-testid="mfield-phone">
+                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-phone">
+                        Phone
+                      </label>
+                      <input
+                        id="m-checkout-phone"
+                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                        placeholder="(555) 555-5555"
+                        value={customerPhone}
+                        onChange={(e) => setCustomerPhone(e.target.value)}
+                        data-testid="input-mcheckout-phone"
+                        autoComplete="tel"
+                        inputMode="tel"
+                      />
+                    </div>
+
+                    <div className="grid gap-2" data-testid="mfield-payment">
+                      <p className="text-xs font-semibold text-muted-foreground" data-testid="label-mpayment">
+                        Payment option
+                      </p>
+                      <div className="grid gap-2" data-testid="toggle-mpayment">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentOption("pay-in-store")}
+                          className={`rounded-2xl border px-3 py-3 text-left transition ${
+                            paymentOption === "pay-in-store"
+                              ? "border-primary/60 bg-accent shadow-sm"
+                              : "bg-background hover:bg-muted"
+                          }`}
+                          data-testid="button-mpay-in-store"
+                        >
+                          <p className="text-sm font-semibold">Pay in store</p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">Cash or card at pickup</p>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentOption("pay-online")}
+                          className={`rounded-2xl border px-3 py-3 text-left transition ${
+                            paymentOption === "pay-online"
+                              ? "border-primary/60 bg-accent shadow-sm"
+                              : "bg-background hover:bg-muted"
+                          }`}
+                          data-testid="button-mpay-online"
+                        >
+                          <p className="text-sm font-semibold">Pay online (demo)</p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">No real payment</p>
+                        </button>
+                      </div>
+                    </div>
+
+                    <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
+                      {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
+                    </Button>
+                  </div>
                   <DialogClose asChild>
                     <Button variant="outline" className="w-full rounded-xl" data-testid="button-mobile-cancel">
                       Keep shopping
