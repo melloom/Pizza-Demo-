@@ -1,40 +1,29 @@
 import { Link } from "wouter";
-import { MapPin, Phone, Pizza, ShoppingCart } from "lucide-react";
+import { MapPin, Phone, Pizza, ShoppingCart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pizzaHero from "@/assets/pizza-hero.png";
 
 const RESTAURANT = {
   name: "Tony's Pizza Shack",
-  tagline: "The best sourdough crust pizza in the neighborhood.",
+  tagline: "Wood-fired pies, cold drinks, and a quick pick-up window.",
   phoneDisplay: "(555) 987-6543",
   phoneE164: "+15559876543",
   addressLine1: "456 Oven Ave",
   addressLine2: "Pizza Heights, ST 12345",
   mapsQuery: "456 Oven Ave Pizza Heights ST 12345",
-  hours: [
-    { day: "Mon", hours: "4:00 PM – 10:00 PM" },
-    { day: "Tue", hours: "4:00 PM – 10:00 PM" },
-    { day: "Wed", hours: "4:00 PM – 10:00 PM" },
-    { day: "Thu", hours: "4:00 PM – 10:00 PM" },
-    { day: "Fri", hours: "11:00 AM – 11:00 PM" },
-    { day: "Sat", hours: "11:00 AM – 11:00 PM" },
-    { day: "Sun", hours: "12:00 PM – 9:00 PM" },
-  ],
+  hoursToday: "Open today: 4:00 PM – 10:00 PM",
 };
 
 function PrimaryActions() {
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    RESTAURANT.mapsQuery,
-  )}`;
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <Link href="/order">
         <Button
           data-testid="button-order-now"
-          className="h-12 w-full rounded-xl text-base shadow-lg bg-primary hover:bg-primary/90"
+          className="h-12 w-full rounded-xl text-base shadow-lg"
         >
           <ShoppingCart className="mr-2 size-4" aria-hidden="true" />
-          Order Online
+          Order Now
         </Button>
       </Link>
       <Link href="/menu">
@@ -54,90 +43,82 @@ function PrimaryActions() {
           className="h-12 w-full rounded-xl text-base"
         >
           <Phone className="mr-2 size-4" aria-hidden="true" />
-          Call Now
+          Call
         </Button>
       </a>
     </div>
   );
 }
 
-function InfoCard() {
+function QuickInfoPills() {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     RESTAURANT.mapsQuery,
   )}`;
+
   return (
-    <section
-      className="rounded-2xl border bg-card shadow-sm"
-      aria-label="Restaurant info"
-      data-testid="card-restaurant-info"
-    >
-      <div className="p-4 sm:p-6">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Address</p>
-            <p className="mt-1 text-base font-semibold" data-testid="text-address">
+    <div className="mt-4 grid gap-2 sm:grid-cols-3">
+      <a
+        href={mapsUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-2xl border bg-card px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+        data-testid="pill-directions"
+      >
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 place-items-center rounded-xl bg-accent text-foreground">
+            <MapPin className="size-4" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">Directions</p>
+            <p className="mt-0.5 text-sm font-semibold leading-tight">
               {RESTAURANT.addressLine1}
-              <br />
-              {RESTAURANT.addressLine2}
             </p>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
-              data-testid="link-maps"
-            >
-              <MapPin className="size-4" aria-hidden="true" />
-              Open in Google Maps
-            </a>
-
-            <div className="mt-4">
-              <p className="text-sm font-medium text-muted-foreground">Phone</p>
-              <a
-                href={`tel:${RESTAURANT.phoneE164}`}
-                className="mt-1 inline-flex items-center gap-2 text-base font-semibold text-foreground underline-offset-4 hover:underline"
-                data-testid="link-phone"
-              >
-                <Phone
-                  className="size-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                {RESTAURANT.phoneDisplay}
-              </a>
-            </div>
+            <p className="text-xs text-muted-foreground">Tap to open maps</p>
           </div>
+        </div>
+      </a>
 
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">Hours</p>
-            <dl className="mt-2 space-y-2" data-testid="list-hours">
-              {RESTAURANT.hours.map((h) => (
-                <div
-                  key={h.day}
-                  className="flex items-baseline justify-between gap-3"
-                >
-                  <dt
-                    className="text-sm font-semibold text-foreground"
-                    data-testid={`text-hours-day-${h.day.toLowerCase()}`}
-                  >
-                    {h.day}
-                  </dt>
-                  <dd
-                    className="text-sm text-muted-foreground"
-                    data-testid={`text-hours-time-${h.day.toLowerCase()}`}
-                  >
-                    {h.hours}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+      <a
+        href={`tel:${RESTAURANT.phoneE164}`}
+        className="rounded-2xl border bg-card px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+        data-testid="pill-call"
+      >
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 place-items-center rounded-xl bg-accent text-foreground">
+            <Phone className="size-4" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">Call for takeout</p>
+            <p className="mt-0.5 text-sm font-semibold leading-tight">
+              {RESTAURANT.phoneDisplay}
+            </p>
+            <p className="text-xs text-muted-foreground">Quick question? Call us.</p>
+          </div>
+        </div>
+      </a>
+
+      <div
+        className="rounded-2xl border bg-card px-4 py-3 shadow-sm"
+        data-testid="pill-hours"
+      >
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 place-items-center rounded-xl bg-accent text-foreground">
+            <Sparkles className="size-4" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">Hours</p>
+            <p className="mt-0.5 text-sm font-semibold leading-tight">
+              {RESTAURANT.hoursToday}
+            </p>
+            <p className="text-xs text-muted-foreground">Walk-ins welcome</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-function BottomCallBar() {
+function BottomOrderBar() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:hidden">
       <div className="container-page pb-3">
@@ -149,9 +130,9 @@ function BottomCallBar() {
               </p>
               <p
                 className="text-xs text-muted-foreground"
-                data-testid="text-bottombar-phone"
+                data-testid="text-bottombar-subtitle"
               >
-                Hot & fresh in 20 mins
+                Order online for fast pick-up
               </p>
             </div>
             <Link href="/order" className="ml-auto">
@@ -181,7 +162,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-2"
               data-testid="link-home"
             >
-              <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
                 <Pizza className="size-4" aria-hidden="true" />
               </span>
               <span className="text-sm font-semibold tracking-tight">
@@ -200,13 +181,13 @@ export default function HomePage() {
                 Menu
               </button>
             </Link>
-            <Link href="/contact">
+            <Link href="/order">
               <button
                 type="button"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
-                data-testid="link-nav-contact"
+                className="rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95"
+                data-testid="link-nav-order"
               >
-                Find Us
+                Order
               </button>
             </Link>
           </nav>
@@ -215,82 +196,94 @@ export default function HomePage() {
 
       <main className="container-page pb-24 pt-6">
         <section className="grain overflow-hidden rounded-3xl border bg-card shadow-sm">
-          <div className="relative aspect-[16/9] sm:aspect-[21/9]">
-            <img 
-              src={pizzaHero} 
-              alt="Fresh pepperoni pizza" 
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 p-5 sm:p-8">
-              <p className="text-sm font-medium text-white/80">Family-owned & operated</p>
-              <h1 className="mt-1 text-3xl font-bold text-white sm:text-5xl">Authentic Wood-Fired Pizza</h1>
-            </div>
-          </div>
-          
-          <div className="p-5 sm:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="min-w-0">
-                <h2
-                  className="text-balance text-2xl font-bold sm:text-3xl"
-                  data-testid="text-restaurant-name"
+          <div className="relative">
+            <div className="relative aspect-[4/5] sm:aspect-[21/9]">
+              <img
+                src={pizzaHero}
+                alt="Fresh pepperoni pizza"
+                className="h-full w-full object-cover"
+                data-testid="img-hero-pizza"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+
+              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
+                  <span className="size-1.5 rounded-full bg-emerald-400" />
+                  Ready in ~20 minutes
+                </div>
+                <h1
+                  className="mt-3 text-balance text-4xl leading-[1.05] text-white sm:text-5xl"
+                  data-testid="text-hero-title"
                 >
-                  {RESTAURANT.name}
-                </h2>
+                  Wood-fired pizza.
+                  <br />
+                  <span className="text-white/90">Made like you mean it.</span>
+                </h1>
                 <p
-                  className="mt-2 max-w-[46ch] text-base text-muted-foreground"
-                  data-testid="text-tagline"
+                  className="mt-3 max-w-[52ch] text-sm text-white/85 sm:text-base"
+                  data-testid="text-hero-subtitle"
                 >
                   {RESTAURANT.tagline}
                 </p>
-              </div>
-              <div className="rounded-2xl bg-accent px-4 py-3">
-                <p
-                  className="text-xs font-medium text-muted-foreground"
-                  data-testid="text-quick-address-label"
-                >
-                  Pick up at
-                </p>
-                <p className="mt-1 text-sm font-semibold" data-testid="text-quick-address">
-                  {RESTAURANT.addressLine1}
-                </p>
-                <p className="text-sm text-muted-foreground" data-testid="text-quick-city">
-                  {RESTAURANT.addressLine2}
-                </p>
+
+                <div className="mt-5">
+                  <PrimaryActions />
+                </div>
               </div>
             </div>
 
-            <div className="mt-5">
-              <PrimaryActions />
-            </div>
+            <div className="p-5 sm:p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-muted-foreground" data-testid="text-hero-kicker">
+                    Family-owned in Pizza Heights
+                  </p>
+                  <h2 className="mt-1 text-2xl sm:text-3xl" data-testid="text-restaurant-name">
+                    {RESTAURANT.name}
+                  </h2>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 rounded-2xl border bg-accent px-4 py-3">
+                  <MapPin className="size-4 text-muted-foreground" aria-hidden="true" />
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground">Pick-up</p>
+                    <p className="text-sm font-semibold" data-testid="text-quick-address">
+                      {RESTAURANT.addressLine1}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div className="mt-8">
-              <InfoCard />
+              <QuickInfoPills />
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                {[
+                  { title: "Stone baked", desc: "Crisp edge + airy crust." },
+                  { title: "Fresh toppings", desc: "Local produce & premium meats." },
+                  { title: "Easy pick-up", desc: "Walk in, grab, go." },
+                ].map((feature, i) => (
+                  <div
+                    key={feature.title}
+                    className="rounded-2xl border bg-card p-4 shadow-sm"
+                    data-testid={`card-feature-${i}`}
+                  >
+                    <p className="text-sm font-semibold">{feature.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-2xl border bg-accent p-4" data-testid="card-home-tip">
+                <p className="text-sm font-semibold">Tip</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Ordering for a group? Place online and add notes at checkout.
+                </p>
+              </div>
             </div>
           </div>
         </section>
-
-        <section className="mt-8 grid gap-3 sm:grid-cols-3">
-          {[
-            { title: "Stone Baked", desc: "Crispy bottom, airy crust every time." },
-            { title: "Fresh Toppings", desc: "Local ingredients delivered daily." },
-            { title: "Fast Pick-up", desc: "Ready in 15-20 minutes." }
-          ].map((feature, i) => (
-            <div
-              key={feature.title}
-              className="rounded-2xl border bg-card p-4 shadow-sm"
-              data-testid={`card-feature-${i}`}
-            >
-              <p className="text-sm font-semibold">{feature.title}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {feature.desc}
-              </p>
-            </div>
-          ))}
-        </section>
       </main>
 
-      <BottomCallBar />
+      <BottomOrderBar />
 
       <footer className="border-t">
         <div className="container-page py-6 text-center sm:text-left">
