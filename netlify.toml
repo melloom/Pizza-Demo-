@@ -1,0 +1,11 @@
+# Netlify config for SPA (client-only deploy)
+# Publish the Vite build output so index.html and assets are at the root.
+[build]
+  command = "npm run build:client"
+  publish = "dist/public"
+
+# SPA fallback: serve index.html for all routes (fixes 404 on /menu, /order, etc.)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
