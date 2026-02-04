@@ -875,28 +875,32 @@ export default function OrderPage() {
                           </button>
                         </DialogTrigger>
 
-                        <DialogContent className="p-0">
-                          <DialogHeader className="border-b p-5">
-                            <DialogTitle data-testid={`text-customize-title-${p.id}`}>{p.name}</DialogTitle>
-                            <DialogDescription data-testid={`text-customize-desc-${p.id}`}>
-                              Pick a size and toppings. Then add it to your cart.
-                            </DialogDescription>
-                          </DialogHeader>
+                        <DialogContent className="flex h-full max-h-[90dvh] flex-col overflow-hidden p-0 sm:h-auto sm:max-w-[500px]">
+                          <div className="flex flex-1 flex-col overflow-hidden">
+                            <DialogHeader className="border-b p-5 shrink-0">
+                              <DialogTitle data-testid={`text-customize-title-${p.id}`}>{p.name}</DialogTitle>
+                              <DialogDescription data-testid={`text-customize-desc-${p.id}`}>
+                                Pick a size and toppings. Then add it to your cart.
+                              </DialogDescription>
+                            </DialogHeader>
 
-                          <PizzaCustomizer
-                            base={p}
-                            onAdd={(c) => {
-                              upsertPizza(p, c);
-                              setMenuPickOpen(false);
-                              setMenuPick(null);
-                            }}
-                          />
+                            <div className="flex-1 overflow-y-auto p-5 pb-32 sm:pb-5">
+                              <PizzaCustomizer
+                                base={p}
+                                onAdd={(c) => {
+                                  upsertPizza(p, c);
+                                  setMenuPickOpen(false);
+                                  setMenuPick(null);
+                                }}
+                              />
+                            </div>
+                          </div>
 
-                          <DialogFooter className="border-t p-4">
+                          <DialogFooter className="absolute bottom-0 left-0 right-0 border-t bg-background/80 p-4 backdrop-blur sm:relative sm:bg-background sm:p-4">
                             <DialogClose asChild>
                               <Button
                                 variant="outline"
-                                className="h-12 rounded-xl"
+                                className="h-12 w-full rounded-xl sm:w-auto"
                                 data-testid={`button-close-customizer-${p.id}`}
                               >
                                 Close
