@@ -325,8 +325,8 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
 
-              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="absolute inset-x-0 bottom-0 p-5 pb-52 sm:p-8">
+                <div className="flex flex-wrap items-center gap-2 mb-36 sm:mb-0">
                   <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
                     <span className="size-1.5 rounded-full bg-emerald-400" />
                     Ready in ~20 minutes
