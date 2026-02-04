@@ -713,11 +713,11 @@ export default function OrderPage() {
         </DialogContent>
       </Dialog>
       <header className="page-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-        <div className="container-page flex h-14 items-center justify-between">
+        <div className="container-page flex min-h-14 flex-wrap items-center justify-between gap-2 py-3 sm:flex-nowrap sm:py-0">
           <Link href="/">
             <button
               type="button"
-              className="inline-flex items-center gap-2 text-sm font-medium"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium hover:bg-muted/80 sm:gap-2 sm:text-sm"
               data-testid="link-exit-order"
             >
               <ChevronLeft className="size-4" aria-hidden="true" />
@@ -725,15 +725,15 @@ export default function OrderPage() {
             </button>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+          <div className="flex min-w-0 shrink items-center gap-2">
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
               <Pizza className="size-4" aria-hidden="true" />
             </span>
-            <div className="leading-tight">
-              <p className="text-sm font-semibold" data-testid="text-order-title">
+            <div className="min-w-0 leading-tight">
+              <p className="truncate text-sm font-semibold" data-testid="text-order-title">
                 Order online
               </p>
-              <p className="text-xs text-muted-foreground" data-testid="text-order-subtitle">
+              <p className="truncate text-xs text-muted-foreground" data-testid="text-order-subtitle">
                 {RESTAURANT.pickupEta}
               </p>
             </div>
@@ -742,8 +742,8 @@ export default function OrderPage() {
           <button
             type="button"
             onClick={clearCart}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-              totalCount === 0 ? "opacity-50" : "text-foreground/80 hover:text-foreground"
+            className={`shrink-0 rounded-lg px-2.5 py-2 text-xs font-medium transition sm:px-3 sm:text-sm ${
+              totalCount === 0 ? "opacity-50" : "text-foreground/80 hover:bg-muted/80 hover:text-foreground"
             }`}
             data-testid="button-order-clear"
           >

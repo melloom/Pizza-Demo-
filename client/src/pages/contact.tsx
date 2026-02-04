@@ -1,6 +1,7 @@
 import { Link } from "wouter";
-import { ChevronLeft, ExternalLink, MapPin, Phone, ShoppingBag, Pizza } from "lucide-react";
+import { ChevronLeft, ExternalLink, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import interiorWarm from "@/assets/interior-warm.png";
 
@@ -22,68 +23,6 @@ const RESTAURANT = {
     { day: "Sun", hours: "12:00 PM – 9:00 PM" },
   ],
 };
-
-function NavHeader() {
-  return (
-    <header className="page-header sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-      <div className="container-page flex h-14 items-center justify-between">
-        <Link href="/">
-          <button
-            type="button"
-            className="inline-flex items-center gap-2"
-            data-testid="link-home"
-          >
-            <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Pizza className="size-4" aria-hidden="true" />
-            </span>
-            <span className="text-sm font-semibold tracking-tight">
-              Tony's Pizza Shack
-            </span>
-          </button>
-        </Link>
-
-        <nav className="flex items-center gap-2">
-          <Link href="/menu">
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-nav-menu"
-            >
-              Menu
-            </button>
-          </Link>
-          <Link href="/about">
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-nav-about"
-            >
-              About
-            </button>
-          </Link>
-          <Link href="/contact">
-            <button
-              type="button"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground"
-              data-testid="link-nav-contact"
-            >
-              Find Us
-            </button>
-          </Link>
-          <Link href="/order">
-            <button
-              type="button"
-              className="rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95"
-              data-testid="link-nav-order"
-            >
-              Order
-            </button>
-          </Link>
-        </nav>
-      </div>
-    </header>
-  );
-}
 
 function MapEmbed() {
   return (
@@ -152,7 +91,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-dvh bg-background">
-      <NavHeader />
+      <PageHeader />
 
       <main className="container-page main-bottom-safe pt-6">
         <section

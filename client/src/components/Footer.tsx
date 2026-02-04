@@ -12,7 +12,12 @@ type FooterProps = {
 
 export function Footer({ className, children }: FooterProps) {
   return (
-    <footer className={cn("border-t", className)}>
+    <footer
+      className={cn(
+        "border-t pb-24 sm:pb-0",
+        className
+      )}
+    >
       <div className="container-page py-6 text-center sm:text-left">
         {children}
         <p className="mt-3 text-xs text-muted-foreground">
