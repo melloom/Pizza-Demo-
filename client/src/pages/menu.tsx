@@ -1,10 +1,10 @@
 import { Link } from "wouter";
-import { ChevronLeft, Phone } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Pizza } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const RESTAURANT = {
-  name: "Maple & Main Kitchen",
-  phoneE164: "+15551234567",
+  name: "Tony's Pizza Shack",
+  onlineOrderUrl: "https://example.com/order",
 };
 
 type MenuItem = {
@@ -23,63 +23,61 @@ type MenuCategory = {
 
 const MENU: MenuCategory[] = [
   {
-    id: "apps",
-    title: "Appetizers",
-    note: "Great for sharing",
+    id: "pizzas",
+    title: "Signature Pizzas",
+    note: "All pizzas are 14\" wood-fired",
     items: [
       {
-        id: "crispy-pickles",
-        name: "Crispy Pickles",
-        description: "Buttermilk batter, house ranch.",
-        price: "$7",
+        id: "classic-pepperoni",
+        name: "Classic Pepperoni",
+        description: "Old-world pepperoni, mozzarella, tomato sauce.",
+        price: "$18",
       },
       {
-        id: "soup-day",
-        name: "Soup of the Day",
-        description: "Ask what’s simmering today.",
-        price: "$6",
+        id: "margherita",
+        name: "Margherita",
+        description: "Fresh mozzarella, basil, extra virgin olive oil.",
+        price: "$16",
       },
       {
-        id: "garlic-bread",
-        name: "Garlic Bread",
-        description: "Toasted baguette, herb butter.",
-        price: "$5",
+        id: "meat-lovers",
+        name: "The Meat Shack",
+        description: "Pepperoni, sausage, bacon, ham.",
+        price: "$22",
+      },
+      {
+        id: "veggie-delight",
+        name: "Garden Veggie",
+        description: "Bell peppers, onions, mushrooms, olives.",
+        price: "$19",
       },
     ],
   },
   {
-    id: "mains",
-    title: "Mains",
-    note: "Comforting classics",
+    id: "sides",
+    title: "Sides & Wings",
+    note: "Perfect pairings",
     items: [
       {
-        id: "burger",
-        name: "Maple Burger",
-        description: "Cheddar, lettuce, tomato, maple-onion jam.",
+        id: "garlic-knots",
+        name: "Garlic Knots (6pc)",
+        description: "Served with warm marinara.",
+        price: "$8",
+      },
+      {
+        id: "buffalo-wings",
+        name: "Spicy Buffalo Wings",
+        description: "8 jumbo wings with celery & ranch.",
         price: "$14",
-      },
-      {
-        id: "chicken-sandwich",
-        name: "Crispy Chicken Sandwich",
-        description: "Pickles, slaw, spicy mayo.",
-        price: "$13",
-      },
-      {
-        id: "pasta",
-        name: "Weeknight Pasta",
-        description: "Seasonal veggies, garlic, parmesan.",
-        price: "$15",
       },
     ],
   },
   {
     id: "drinks",
-    title: "Drinks",
-    note: "Cold + refreshing",
+    title: "Cold Drinks",
     items: [
-      { id: "iced-tea", name: "Iced Tea", price: "$3" },
-      { id: "lemonade", name: "House Lemonade", price: "$4" },
-      { id: "soda", name: "Soda", price: "$3" },
+      { id: "coke", name: "Mexican Coke", price: "$3.50" },
+      { id: "water", name: "San Pellegrino", price: "$4" },
     ],
   },
 ];
@@ -145,33 +143,15 @@ function CategoryBlock({ cat }: { cat: MenuCategory }) {
   );
 }
 
-function BottomCallBar() {
+function BottomOrderBar() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:hidden">
       <div className="container-page pb-3">
-        <div className="pointer-events-auto rounded-2xl border bg-card/95 shadow-md backdrop-blur supports-[backdrop-filter]:bg-card/80">
-          <div className="flex items-center gap-3 p-3">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold" data-testid="text-bottombar-title">
-                Need to place an order?
-              </p>
-              <p
-                className="text-xs text-muted-foreground"
-                data-testid="text-bottombar-subtitle"
-              >
-                Call for takeout and specials
-              </p>
-            </div>
-            <a href={`tel:${RESTAURANT.phoneE164}`} className="ml-auto">
-              <Button
-                data-testid="button-bottom-call"
-                className="h-11 rounded-xl px-4"
-              >
-                <Phone className="mr-2 size-4" aria-hidden="true" />
-                Call Now
-              </Button>
-            </a>
-          </div>
+        <div className="pointer-events-auto rounded-2xl border bg-primary text-primary-foreground shadow-lg">
+          <a href={RESTAURANT.onlineOrderUrl} className="flex items-center justify-center gap-2 p-4">
+            <ShoppingCart className="size-5" aria-hidden="true" />
+            <span className="font-bold">Order Online Now</span>
+          </a>
         </div>
       </div>
     </div>
@@ -193,8 +173,9 @@ export default function MenuPage() {
               Home
             </button>
           </Link>
-          <p className="text-sm font-semibold" data-testid="text-menu-title">
-            Menu
+          <p className="flex items-center gap-2 text-sm font-semibold" data-testid="text-menu-title">
+            <Pizza className="size-4 text-primary" />
+            Tony's Menu
           </p>
           <Link href="/contact">
             <button
@@ -202,7 +183,7 @@ export default function MenuPage() {
               className="text-sm font-medium text-foreground/80 hover:text-foreground"
               data-testid="link-nav-contact"
             >
-              Contact
+              Find Us
             </button>
           </Link>
         </div>
@@ -213,16 +194,22 @@ export default function MenuPage() {
           className="rounded-3xl border bg-card p-5 shadow-sm sm:p-8"
           data-testid="card-menu-hero"
         >
-          <h1 className="text-3xl sm:text-4xl" data-testid="text-menu-heading">
-            {RESTAURANT.name} Menu
+          <h1 className="text-3xl font-bold sm:text-4xl" data-testid="text-menu-heading">
+            Hot & Fresh Menu
           </h1>
           <p
             className="mt-2 max-w-[62ch] text-base text-muted-foreground"
             data-testid="text-menu-subheading"
           >
-            Simple, readable, and made for phones. Prices and items are placeholders—swap
-            in your real menu anytime.
+            Hand-tossed sourdough crust, wood-fired to perfection. 
           </p>
+          <div className="mt-4 flex gap-2">
+            <a href={RESTAURANT.onlineOrderUrl} target="_blank" rel="noreferrer">
+              <Button className="rounded-xl shadow-md">
+                Order for Pick-up
+              </Button>
+            </a>
+          </div>
         </section>
 
         <div className="mt-6 grid gap-4">
@@ -235,22 +222,14 @@ export default function MenuPage() {
           className="mt-6 rounded-2xl border bg-accent p-4"
           data-testid="card-menu-note"
         >
-          <p className="text-sm font-medium">Dietary notes</p>
+          <p className="text-sm font-medium">Pizza Sizes</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Ask about gluten-free or vegetarian options—we’re happy to help.
+            All signature pizzas come in a standard 14" size. Gluten-free crust available for +$3.
           </p>
         </section>
       </main>
 
-      <BottomCallBar />
-
-      <footer className="border-t">
-        <div className="container-page py-6">
-          <p className="text-xs text-muted-foreground" data-testid="text-footer">
-            Menu items and prices are subject to change.
-          </p>
-        </div>
-      </footer>
+      <BottomOrderBar />
     </div>
   );
 }
