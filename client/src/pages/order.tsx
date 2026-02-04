@@ -30,6 +30,7 @@ import {
   loadOrderSession,
   saveOrderSession,
 } from "@/lib/orderSession";
+import { Footer } from "@/components/Footer";
 import { toast } from "@/hooks/use-toast";
 
 const RESTAURANT = {
@@ -1299,13 +1300,11 @@ export default function OrderPage() {
         </div>
       ) : null}
 
-      <footer className="pb-24 md:pb-8">
-        <div className="container-page py-6">
-          <p className="text-center text-xs text-muted-foreground" data-testid="text-order-footer">
-            • {RESTAURANT.name} • Demo online ordering •
-          </p>
-        </div>
-      </footer>
+      <Footer className="pb-24 md:pb-8">
+        <p className="text-center text-xs text-muted-foreground" data-testid="text-order-footer">
+          • {RESTAURANT.name} • Demo online ordering •
+        </p>
+      </Footer>
     </div>
   );
 }

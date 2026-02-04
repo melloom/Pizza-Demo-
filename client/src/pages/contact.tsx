@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ChevronLeft, ExternalLink, MapPin, Phone, ShoppingBag, Pizza } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import interiorWarm from "@/assets/interior-warm.png";
 
@@ -250,13 +251,11 @@ export default function ContactPage() {
 
       <BottomCallBar />
 
-      <footer className="border-t">
-        <div className="container-page py-6 text-center sm:text-left">
-          <p className="text-xs text-muted-foreground" data-testid="text-footer">
-            © {new Date().getFullYear()} {RESTAURANT.name}. Hand-crafted pizza.
-          </p>
-        </div>
-      </footer>
+      <Footer>
+        <p className="text-xs text-muted-foreground" data-testid="text-footer">
+          © {new Date().getFullYear()} {RESTAURANT.name}. Hand-crafted pizza.
+        </p>
+      </Footer>
     </div>
   );
 }

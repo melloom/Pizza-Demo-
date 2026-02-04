@@ -8,6 +8,7 @@ import {
   Flame,
   HeartHandshake,
 } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import heroPizza from "@/assets/pizza-oven.png";
 import familyPhoto from "@/assets/pizza-family.png";
@@ -414,13 +415,11 @@ export default function HomePage() {
 
       <BottomOrderBar />
 
-      <footer className="border-t">
-        <div className="container-page py-6 text-center sm:text-left">
-          <p className="text-xs text-muted-foreground" data-testid="text-footer">
-            © {new Date().getFullYear()} {RESTAURANT.name}. Hand-crafted pizza.
-          </p>
-        </div>
-      </footer>
+      <Footer>
+        <p className="text-xs text-muted-foreground" data-testid="text-footer">
+          © {new Date().getFullYear()} {RESTAURANT.name}. Hand-crafted pizza.
+        </p>
+      </Footer>
     </div>
   );
 }

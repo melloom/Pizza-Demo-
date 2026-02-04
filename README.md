@@ -10,6 +10,10 @@ A modern restaurant website and ordering experience — browse the menu, build y
 
 *(Replace the link above with your actual Netlify URL if different.)*
 
+**More demo sites:**
+- [Flavor Haven](https://flavorhavendemo.netlify.app/)
+- [Rosie's Kitchen](https://rosiekitchen.netlify.app/)
+
 ---
 
 ## Features

@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ChevronLeft, HeartHandshake, Flame, Clock, MapPin, Pizza } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import ingredientsPhoto from "@/assets/ingredients.png";
 import doughPhoto from "@/assets/dough-making.png";
@@ -352,13 +353,11 @@ export default function AboutPage() {
         </section>
       </main>
 
-      <footer className="border-t">
-        <div className="container-page py-6 text-center sm:text-left">
-          <p className="text-xs text-muted-foreground" data-testid="text-about-footer">
-            © {new Date().getFullYear()} {RESTAURANT.name}. Thanks for supporting local.
-          </p>
-        </div>
-      </footer>
+      <Footer>
+        <p className="text-xs text-muted-foreground" data-testid="text-about-footer">
+          © {new Date().getFullYear()} {RESTAURANT.name}. Thanks for supporting local.
+        </p>
+      </Footer>
     </div>
   );
 }

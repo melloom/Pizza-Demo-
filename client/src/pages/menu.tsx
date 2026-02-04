@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { ChevronLeft, Pizza, Flame, Leaf, Drumstick, GlassWater } from "lucide-react";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
 const RESTAURANT = {
@@ -315,13 +316,11 @@ export default function MenuPage() {
         </section>
       </main>
 
-      <footer className="pb-8">
-        <div className="container-page py-6">
-          <p className="text-center text-xs text-muted-foreground" data-testid="text-menu-footer">
-            • {RESTAURANT.name} • Wood-fired pies •
-          </p>
-        </div>
-      </footer>
+      <Footer className="pb-8">
+        <p className="text-center text-xs text-muted-foreground" data-testid="text-menu-footer">
+          • {RESTAURANT.name} • Wood-fired pies •
+        </p>
+      </Footer>
     </div>
   );
 }
