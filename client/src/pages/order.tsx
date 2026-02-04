@@ -30,6 +30,7 @@ import {
   loadOrderSession,
   saveOrderSession,
 } from "@/lib/orderSession";
+import { toast } from "@/hooks/use-toast";
 
 const RESTAURANT = {
   name: "Tony's Pizza Shack",
@@ -318,6 +319,17 @@ export default function OrderPage() {
         { kind: "pizza", data: { id: key, base, quantity: 1, customization } },
       ];
     });
+
+    const size = SIZES.find((s) => s.id === customization.sizeId)?.name ?? "Medium";
+    const toppings = customization.toppingIds
+      .map((id) => TOPPINGS.find((t) => t.id === id)?.name)
+      .filter(Boolean)
+      .join(", ");
+
+    toast({
+      title: "Added to cart",
+      description: toppings ? `${base.name} • ${size} • ${toppings}` : `${base.name} • ${size}`,
+    });
   };
 
   const addOther = (item: MenuItem) => {
@@ -337,6 +349,11 @@ export default function OrderPage() {
         return copy;
       }
       return [...prev, { kind: "other", data: { id: item.id, item, quantity: 1 } }];
+    });
+
+    toast({
+      title: "Added to cart",
+      description: `${item.name} • $${money(item.price)}`,
     });
   };
 
