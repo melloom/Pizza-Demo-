@@ -1152,142 +1152,143 @@ export default function OrderPage() {
                 View order • {totalCount} • ${money(total)}
               </Button>
             </DialogTrigger>
-            <DialogContent className="p-0">
-              <DialogHeader className="border-b p-5">
-                <DialogTitle data-testid="text-mobile-cart-title">Your order</DialogTitle>
-                <DialogDescription data-testid="text-mobile-cart-subtitle">
-                  Review items, adjust quantities, then place your pick-up order.
-                </DialogDescription>
-              </DialogHeader>
+            <DialogContent className="flex h-full max-h-[90dvh] flex-col overflow-hidden p-0 sm:h-auto sm:max-w-[500px]">
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <DialogHeader className="border-b p-5 shrink-0">
+                  <DialogTitle data-testid="text-mobile-cart-title">Your order</DialogTitle>
+                  <DialogDescription data-testid="text-mobile-cart-subtitle">
+                    Review items, adjust quantities, then place your pick-up order.
+                  </DialogDescription>
+                </DialogHeader>
 
-              <div className="max-h-[52vh] space-y-4 overflow-auto px-5 py-4" data-testid="list-mobile-cart-items">
-                {summaryLines.map((l) => (
-                  <div key={l.id} className="flex items-start justify-between gap-3 rounded-2xl border bg-card p-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold line-clamp-1">{l.title}</p>
-                      {l.subtitle ? (
-                        <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{l.subtitle}</p>
-                      ) : null}
-                      <div className="mt-2">
-                        <QuantityPill
-                          quantity={l.qty}
-                          onDec={() => decLine(l.id)}
-                          onInc={() => incLine(l.id)}
-                          decTestId={`button-mcart-dec-${l.id}`}
-                          incTestId={`button-mcart-inc-${l.id}`}
-                          qtyTestId={`text-mcart-qty-${l.id}`}
+                <div className="flex-1 overflow-y-auto p-5 pb-40">
+                  <div className="space-y-4" data-testid="list-mobile-cart-items">
+                    {summaryLines.map((l) => (
+                      <div key={l.id} className="flex items-start justify-between gap-3 rounded-2xl border bg-card p-3 shadow-sm">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-bold line-clamp-1">{l.title}</p>
+                          {l.subtitle ? (
+                            <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{l.subtitle}</p>
+                          ) : null}
+                        </div>
+                        <div className="shrink-0">
+                          <QuantityPill
+                            quantity={l.qty}
+                            onDec={() => decLine(l.id)}
+                            onInc={() => incLine(l.id)}
+                            decTestId={`button-mcart-dec-${l.id}`}
+                            incTestId={`button-mcart-inc-${l.id}`}
+                            qtyTestId={`text-mcart-qty-${l.id}`}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 space-y-4">
+                    <div className="space-y-2 border-t pt-4 text-sm" data-testid="mobile-cart-totals">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="font-medium">${money(subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Tax</span>
+                        <span className="font-medium">${money(tax)}</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-lg text-primary pt-1">
+                        <span>Total</span>
+                        <span>${money(total)}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4" data-testid="mobile-checkout-form">
+                      <div className="space-y-2">
+                        <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-notes">
+                          Notes (optional)
+                        </label>
+                        <textarea
+                          id="m-notes"
+                          className="min-h-20 w-full resize-none rounded-2xl border bg-background p-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                          placeholder="Allergic to something?"
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
                         />
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
 
-              <DialogFooter className="border-t p-4">
-                <div className="w-full space-y-3">
-                  <div className="space-y-2 text-sm" data-testid="mobile-cart-totals">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span>${money(subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Tax</span>
-                      <span>${money(tax)}</span>
-                    </div>
-                    <div className="flex justify-between font-bold">
-                      <span>Total</span>
-                      <span>${money(total)}</span>
-                    </div>
-                  </div>
+                      <div className="grid gap-2" data-testid="mfield-name">
+                        <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-name">
+                          Name
+                        </label>
+                        <input
+                          id="m-checkout-name"
+                          className="h-11 w-full rounded-2xl border bg-background px-3 text-sm"
+                          placeholder="Your name"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                        />
+                      </div>
 
-                  <div className="space-y-3" data-testid="mobile-checkout-form">
-                    <div className="grid gap-2" data-testid="mfield-name">
-                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-name">
-                        Name
-                      </label>
-                      <input
-                        id="m-checkout-name"
-                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                        placeholder="Your name"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        data-testid="input-mcheckout-name"
-                        autoComplete="name"
-                      />
-                    </div>
+                      <div className="grid gap-2" data-testid="mfield-email">
+                        <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-email">
+                          Email
+                        </label>
+                        <input
+                          id="m-checkout-email"
+                          className="h-11 w-full rounded-2xl border bg-background px-3 text-sm"
+                          placeholder="you@email.com"
+                          value={customerEmail}
+                          onChange={(e) => setCustomerEmail(e.target.value)}
+                        />
+                      </div>
 
-                    <div className="grid gap-2" data-testid="mfield-email">
-                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-email">
-                        Email
-                      </label>
-                      <input
-                        id="m-checkout-email"
-                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                        placeholder="you@email.com"
-                        value={customerEmail}
-                        onChange={(e) => setCustomerEmail(e.target.value)}
-                        data-testid="input-mcheckout-email"
-                        autoComplete="email"
-                        inputMode="email"
-                      />
-                    </div>
+                      <div className="grid gap-2" data-testid="mfield-phone">
+                        <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-phone">
+                          Phone
+                        </label>
+                        <input
+                          id="m-checkout-phone"
+                          className="h-11 w-full rounded-2xl border bg-background px-3 text-sm"
+                          placeholder="(555) 555-5555"
+                          value={customerPhone}
+                          onChange={(e) => setCustomerPhone(e.target.value)}
+                        />
+                      </div>
 
-                    <div className="grid gap-2" data-testid="mfield-phone">
-                      <label className="text-xs font-semibold text-muted-foreground" htmlFor="m-checkout-phone">
-                        Phone
-                      </label>
-                      <input
-                        id="m-checkout-phone"
-                        className="h-11 w-full rounded-2xl border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                        placeholder="(555) 555-5555"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        data-testid="input-mcheckout-phone"
-                        autoComplete="tel"
-                        inputMode="tel"
-                      />
-                    </div>
-
-                    <div className="grid gap-2" data-testid="mfield-payment">
-                      <p className="text-xs font-semibold text-muted-foreground" data-testid="label-mpayment">
-                        Payment option
-                      </p>
-                      <div className="grid gap-2" data-testid="toggle-mpayment">
-                        <button
-                          type="button"
-                          onClick={() => setPaymentOption("pay-in-store")}
-                          className={`rounded-2xl border px-3 py-3 text-left transition ${
-                            paymentOption === "pay-in-store"
-                              ? "border-primary/60 bg-accent shadow-sm"
-                              : "bg-background hover:bg-muted"
-                          }`}
-                          data-testid="button-mpay-in-store"
-                        >
-                          <p className="text-sm font-semibold">Pay in store</p>
-                          <p className="mt-0.5 text-xs text-muted-foreground">Cash or card at pickup</p>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPaymentOption("pay-online")}
-                          className={`rounded-2xl border px-3 py-3 text-left transition ${
-                            paymentOption === "pay-online"
-                              ? "border-primary/60 bg-accent shadow-sm"
-                              : "bg-background hover:bg-muted"
-                          }`}
-                          data-testid="button-mpay-online"
-                        >
-                          <p className="text-sm font-semibold">Pay online (demo)</p>
-                          <p className="mt-0.5 text-xs text-muted-foreground">No real payment</p>
-                        </button>
+                      <div className="grid gap-2" data-testid="mfield-payment">
+                        <p className="text-xs font-semibold text-muted-foreground">Payment option</p>
+                        <div className="grid gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setPaymentOption("pay-in-store")}
+                            className={`rounded-2xl border p-3 text-left transition ${
+                              paymentOption === "pay-in-store" ? "border-primary bg-accent shadow-sm" : "bg-background"
+                            }`}
+                          >
+                            <p className="text-sm font-semibold">Pay in store</p>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentOption("pay-online")}
+                            className={`rounded-2xl border p-3 text-left transition ${
+                              paymentOption === "pay-online" ? "border-primary bg-accent shadow-sm" : "bg-background"
+                            }`}
+                          >
+                            <p className="text-sm font-semibold">Pay online (demo)</p>
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <Button className="h-12 w-full rounded-xl" onClick={handleCheckout} data-testid="button-mobile-checkout">
-                      {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
-                    </Button>
                   </div>
+                </div>
+              </div>
+
+              <DialogFooter className="absolute bottom-0 left-0 right-0 border-t bg-background/95 p-4 backdrop-blur-sm sm:relative sm:bg-background">
+                <div className="grid w-full gap-2">
+                  <Button className="h-12 w-full rounded-xl text-base font-bold shadow-md" onClick={handleCheckout}>
+                    {orderStatus === "processing" ? "Processing..." : "Place pick-up order"}
+                  </Button>
                   <DialogClose asChild>
-                    <Button variant="outline" className="w-full rounded-xl" data-testid="button-mobile-cancel">
+                    <Button variant="ghost" className="h-11 w-full rounded-xl text-muted-foreground">
                       Keep shopping
                     </Button>
                   </DialogClose>
